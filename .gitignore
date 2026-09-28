@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# 流水线运行时产物
+history/
+01-prd.md
+02-requirement-review.md
+03-source/
+04-qa-test-report.md
+05-security-pentest-report.md
+!**/.gitkeep
+
+# 编辑器/系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
