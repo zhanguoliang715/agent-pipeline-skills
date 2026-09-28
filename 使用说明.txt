@@ -1,0 +1,106 @@
+五棒软件开发流水线 Skill 使用说明
+=====================================
+
+这套东西把"写需求 -> 评审 -> 开发 -> 测试 -> 安全攻防"固化成五个独立 Skill，
+靠固定文件名和门禁规则串成流水线，不靠口头交接。
+
+--------------------------------------------------
+目录结构
+--------------------------------------------------
+D:\agent skill\
+├── product-manager\            棒1：写 PRD
+├── requirement-reviewer\       棒2：需求评审
+├── software-developer\          棒3：写代码
+├── qa-tester\                  棒4：功能测试
+├── security-pentester\          棒5：安全攻防（终点）
+├── validate_pipeline.py        全流水线一致性校验器
+├── USAGE.md                     详细使用说明
+├── README.md                    GitHub 门面文档
+└── LICENSE                      MIT 协议
+
+每个 skill 目录内部：
+  SKILL.md           指令入口
+  references\        知识库（模板、清单、规范）
+  scripts\           可执行校验脚本
+
+--------------------------------------------------
+五棒职责和产出
+--------------------------------------------------
+棒1 product-manager
+  产出：01-prd.md
+  干什么：把原始想法写成边界清楚、可验收的 PRD
+  门禁：先问"你真要做吗"，最多 3 轮追问
+
+棒2 requirement-reviewer
+  产出：02-requirement-review.md
+  干什么：评审 PRD 可执行性，六维度打分
+  门禁：收到的不是 PRD 就退回；最多打回 2 次（共 3 次评审机会）
+
+棒3 software-developer
+  产出：03-source\（目录，含 README）
+  干什么：按 YES 的 PRD 写可运行代码
+  门禁：02 结论不是 YES 不开工
+
+棒4 qa-tester
+  产出：04-qa-test-report.md
+  干什么：搭环境跑主流程，列 bug 分级
+  门禁：按 README 起不来 = 致命 bug 直接打回
+
+棒5 security-pentester
+  产出：05-security-pentest-report.md
+  干什么：授权门禁后多轮攻防，高危修完再攻
+  门禁：外部/公网目标一律拒绝
+
+--------------------------------------------------
+怎么跑一条流水线
+--------------------------------------------------
+在一个空工作目录里按顺序让对应 Skill 干活，每棒产出固定文件名：
+
+工作区\
+├── 01-prd.md
+├── 02-requirement-review.md
+├── 03-source\
+├── 04-qa-test-report.md
+├── 05-security-pentest-report.md
+└── history\                 覆盖写前的历史归档
+
+每棒交稿前跑对应脚本做结构校验（在工作区根目录）：
+
+  python product-manager\scripts\check_prd.py 01-prd.md
+  python requirement-reviewer\scripts\check_review.py 02-requirement-review.md
+  python software-developer\scripts\check_source.py 03-source\
+  python qa-tester\scripts\check_qa.py 04-qa-test-report.md
+  python security-pentester\scripts\scan_security.py 03-source\
+
+退出码：
+  0 = 通过
+  1 = 有 HIGH / 致命缺失
+  4 = 有 MED（无 HIGH）
+  3 = 目录/路径不存在
+  2 = 命令行参数写错
+  5 = 扫描工具自身故障（不能当干净）
+
+--------------------------------------------------
+环境要求
+--------------------------------------------------
+- Python 3.9 以上
+- 四棒检查脚本只用标准库，不用装任何东西
+- 安全棒可选深度扫描：pip install "bandit==1.9.4"
+  不装也能跑，只跑正则粗扫
+
+--------------------------------------------------
+自检
+--------------------------------------------------
+改完任何 skill 文件后，跑一致性校验：
+
+  python validate_pipeline.py
+
+退出 0 = 全绿。它检查五棒结构、references 不悬空、scripts 存在、固定产物名声明。
+
+--------------------------------------------------
+GitHub 仓库
+--------------------------------------------------
+https://github.com/zhanguoliang715/agent-pipeline-skills
+
+版权人：壤驷秉燊
+协议：MIT
