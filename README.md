@@ -1,10 +1,10 @@
-# Software Pipeline Skills — 五棒软件开发流水线
+# Software Pipeline Skills — 软件开发流水线
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Bandit](https://img.shields.io/badge/bandit-1.9.4-yellow.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-把"写需求 → 评审 → 开发 → 测试 → 安全攻防"固化成五个独立的 Agent Skill，靠固定文件名和门禁规则串成流水线，不靠口头交接。
+把"写需求 → 评审 → 开发 → 测试 → 安全攻防"固化成六个独立的 Agent Skill，靠固定文件名和门禁规则串成流水线，不靠口头交接。前五个是单棒，第六个 `pipeline-orchestrator` 是总调度，一句话跑完整条。
 
 ## 为什么要有这个
 
@@ -63,8 +63,12 @@
 │   ├── SKILL.md
 │   ├── references/        # vuln-severity.md, attack-vectors.md
 │   └── scripts/           # scan_danger.py, scan_security.py
+├── pipeline-orchestrator/  # 总调度（一句话跑完整条流水线）
+│   └── SKILL.md
 ├── validate_pipeline.py    # 全流水线一致性校验
 ├── USAGE.md                # 详细使用说明
+├── 使用说明.txt             # 中文版快速上手
+├── 提示词模板.txt           # 傻瓜式提示词
 ├── LICENSE
 └── .gitignore
 ```
@@ -103,10 +107,12 @@ python security-pentester/scripts/scan_security.py 03-source/
 
 ### 退出码
 
-| 码 | 含义 |
+下面是安全棒 `scan_security.py` 的退出码。其他四棒脚本的 0/1/2/3 含义各不同（2 号在 check_prd=占位残留、check_source=依赖目录混入、check_qa=未修致命项），以各脚本 `--help` 或 USAGE.md 为准。
+
+| 码 | 含义（安全棒） |
 |---|---|
-| 0 | 通过 |
-| 1 | 有 HIGH / 致命缺失 |
+| 0 | 干净 |
+| 1 | 有 HIGH |
 | 4 | 有 MED（无 HIGH） |
 | 3 | 目录/路径不存在 |
 | 2 | argparse 用法错误 |

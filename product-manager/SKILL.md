@@ -5,7 +5,7 @@ metadata:
   role: Product Manager
   platform: cross-platform
   stage: 1
-  version: 1.4.3
+  version: 1.4.4
   author: agent-pipeline
   upstream: 业务方/用户口头想法
   downstream: Requirement Reviewer
@@ -65,7 +65,22 @@ metadata:
 
 ## 输出契约
 
-产出一份完整 PRD（Markdown），**文件名固定为 `01-prd.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范），结构见 [references/prd-template.md](references/prd-template.md)（十节，第 1 节开头含"一句话概括"）。
+产出一份完整 PRD（Markdown），**文件名固定为 `01-prd.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。
+
+**十节标题必须和下面完全一致**（check_prd.py 按这些字串硬匹配，少一个字就 FAIL）：
+
+1. 背景与目标
+2. 目标用户与场景
+3. 用户故事
+4. 功能需求清单
+5. 业务流程
+6. 非功能需求
+7. 范围边界
+8. 验收标准
+9. 依赖
+10. 里程碑
+
+模板见 [references/prd-template.md](references/prd-template.md)（第 1 节开头含"一句话概括"）。
 
 **交稿前必跑**（在工作区根目录）：`python product-manager/scripts/check_prd.py 01-prd.md`。退出码非 0 不准交：缺节补节，有占位残留替换成真实内容。
 

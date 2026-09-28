@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""五棒流水线一致性校验器。
+"""流水线一致性校验器。
 
-放在 D:\\agent skill\\ 根目录，直接 `python validate_pipeline.py` 跑。
+放在仓库根目录，直接 `python validate_pipeline.py` 跑。
 不依赖第三方包，只用标准库。校验项：
-  1. 五棒 SKILL.md 都存在、frontmatter 白名单合规、有 version、有第 0 步门禁
+  1. 各棒 SKILL.md 都存在、frontmatter 白名单合规、有 version、有第 0 步门禁
   2. metadata.references 声明的每个文件真实存在、本文件版本与声明一致、含修订历史
   3. SKILL.md 正文里 markdown 链接到的 references 不悬空
-  4. 五棒 version 一致
+  4. 各棒 version 不一致只警告（独立发版，改谁升谁），不 FAIL
   5. 各棒输出契约声明了自己的固定产物名（01-05）
+  6. pipeline-orchestrator 作为总调度，查 SKILL.md/frontmatter/version/第 0 步门禁
 有任何 FAIL 退出码为 1。
 """
 import re
@@ -22,6 +23,7 @@ SKILLS = [
     "software-developer",
     "qa-tester",
     "security-pentester",
+    "pipeline-orchestrator",
 ]
 ALLOWED_FM_KEYS = {"name", "description", "license", "allowed-tools", "metadata"}
 NAMING = {
@@ -92,13 +94,19 @@ for skill in SKILLS:
             errors.append(f"[{skill}] 正文链接悬空 references/{link}")
 
     # 正文命令里引用的 scripts/ 脚本必须存在
-    for script in re.findall(r"scripts/([a-z0-9_.-]+\.py)", text):
-        if not (d / "scripts" / script).exists():
-            errors.append(f"[{skill}] 引用了不存在的 scripts/{script}")
+    # 支持两种：本棒 scripts/xxx.py，或跨棒 <skill>/scripts/xxx.py
+    for m in re.finditer(r"(?:([a-z-]+)/)?scripts/([a-z0-9_.-]+\.py)", text):
+        owner, script = m.group(1), m.group(2)
+        if owner:
+            target = ROOT / owner / "scripts" / script
+        else:
+            target = d / "scripts" / script
+        if not target.exists():
+            errors.append(f"[{skill}] 引用了不存在的 scripts/{owner + '/' if owner else ''}{script}")
 
-    # 固定产物名
-    fname = NAMING[skill]
-    if fname not in text:
+    # 固定产物名（orchestrator 无自己的产物，跳过）
+    fname = NAMING.get(skill)
+    if fname and fname not in text:
         errors.append(f"[{skill}] 输出契约未声明固定产物名 {fname}")
 
 

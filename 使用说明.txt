@@ -11,7 +11,7 @@ D:\agent skill\
 ├── product-manager\            棒1：写 PRD
 ├── requirement-reviewer\       棒2：需求评审
 ├── software-developer\          棒3：写代码
-├── qa-tester\                  棒4：功能测试
+├── qa-tester\                            棒4：功能测试
 ├── security-pentester\          棒5：安全攻防（终点）
 ├── validate_pipeline.py        全流水线一致性校验器
 ├── USAGE.md                     详细使用说明
