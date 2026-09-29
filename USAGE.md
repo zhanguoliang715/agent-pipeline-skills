@@ -24,7 +24,7 @@
 
 每个 skill 目录内部标准结构：`SKILL.md`（指令入口）+ `references/`（知识库）+ 可选 `scripts/`。
 
-## 五棒一览
+## 棒次一览
 
 | 棒次 | Skill 目录 | 产出文件 | 职责一句话 |
 |---|---|---|---|
@@ -70,7 +70,31 @@
 | QA | `python qa-tester/scripts/check_qa.py 04-qa-test-report.md` | 有结论、有 bug 清单、无未修复致命项 |
 | SP | `python security-pentester/scripts/scan_security.py 03-source/` | 危险代码扫描（正则粗扫 + bandit Python 深度扫） |
 
-退出码通用约定：0=通过，1=致命缺失/HIGH，2=警告/占位残留，3=路径错误，4=有 MED，5=扫描工具自身故障。这些脚本只查结构和完整性，不替你判断内容对错。
+退出码分两套，别混：
+
+**四棒 check 脚本（check_prd / check_review / check_source / check_qa）**：
+
+| 码 | 含义 |
+|---|---|
+| 0 | 通过 |
+| 1 | 缺内容（缺章节/缺结论/缺 README 等） |
+| 2 | 业务警告，各脚本语义不同：check_prd/check_review=占位残留，check_source=依赖目录混入，check_qa=未修致命/严重项 |
+| 3 | 路径不存在（文件或目录） |
+
+缺参数 = 2（用法错误，与业务警告共用 2 号）。
+
+**安全棒 scan_security.py（scan_danger.py 同此契约）**：
+
+| 码 | 含义 |
+|---|---|
+| 0 | 干净 |
+| 1 | 有 HIGH |
+| 4 | 有 MED（无 HIGH） |
+| 3 | 目录/路径不存在 |
+| 2 | argparse 用法错误（命令行写错） |
+| 5 | 扫描工具自身故障（bandit 崩/JSON 坏/有 .py 但 0 行），不能当干净 |
+
+这些脚本只查结构和完整性，不替你判断内容对错。
 
 ### 1. 一致性校验器（每次改完 Skill 必跑）
 
@@ -80,7 +104,7 @@ python validate_pipeline.py
 
 退出码 0 = 全绿；非 0 = 有问题，按 FAIL 清单改。它自动检查：
 
-- 五棒 SKILL.md 都在、frontmatter 白名单合规、有 version、有第 0 步门禁；
+- 各棒 SKILL.md 都在、frontmatter 白名单合规、有 version、有第 0 步门禁；
 - 各棒 version 独立发版（不一致只警告，不是错误）；
 - references 声明的文件真实存在、本文件版本对得上、含修订历史；
 - 正文 markdown 链接和 scripts/ 脚本不悬空；
@@ -130,7 +154,7 @@ python scripts/regression_test.py
 
 ### validate_pipeline.py 也只管结构，不管对错
 
-它能证明"五棒文件齐、引用不悬空、版本字段在、命名写了"，**证明不了"规则写得对、脚本行为正确"**。脚本误报/漏报要靠自测样本验证，validate 全绿 ≠ 行为正确。
+它能证明"各棒文件齐、引用不悬空、版本字段在、命名写了"，**证明不了"规则写得对、脚本行为正确"**。脚本误报/漏报要靠自测样本验证，validate 全绿 ≠ 行为正确。
 
 ## history/ 留档
 

@@ -14,7 +14,7 @@ REQUIRED_SECTIONS = [
     "业务流程", "非功能需求", "范围边界", "验收标准",
     "依赖", "里程碑",
 ]
-PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]|【[^】]{2,}】")
+PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]|【[^】]{2,}】|<(?!(?:https?|mailto):)[^>\n]{2,}>")
 TODO = re.compile(r"待补充|TODO|待写|TBD", re.I)
 
 

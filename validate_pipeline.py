@@ -67,11 +67,13 @@ for skill in SKILLS:
         errors.append(f"[{skill}] 缺第 0 步开工门禁")
 
     # metadata.references 块：形如 "    xxx.md: 1.0.1"
+    # 总调度可显式声明 "references: 无"（无独立知识库），豁免检查
     declared = dict(
         re.findall(r"^\s{4}([a-z0-9.-]+\.md):\s*([0-9.]+)\s*$", text, re.M)
     )
-    if not declared:
-        warnings.append(f"[{skill}] metadata 无 references 声明块")
+    declares_none = "references: 无" in text
+    if not declared and not declares_none:
+        warnings.append(f"[{skill}] metadata 无 references 声明块（总调度可用 'references: 无' 豁免）")
     for fname, declared_ver in declared.items():
         rp = d / "references" / fname
         if not rp.exists():
@@ -110,12 +112,12 @@ for skill in SKILLS:
         errors.append(f"[{skill}] 输出契约未声明固定产物名 {fname}")
 
 
-# 五棒版本：不强制一致（各棒独立发版，改谁升谁），只警告提醒
+# 各棒版本：不强制一致（各棒独立发版，改谁升谁），只警告提醒
 if len(set(versions.values())) > 1:
-    warnings.append(f"五棒 version 不一致（各棒独立发版，仅提醒）: {versions}")
+    warnings.append(f"各棒 version 不一致（独立发版，仅提醒）: {versions}")
 
 print("=" * 64)
-print("五棒流水线一致性校验")
+print("流水线一致性校验")
 print("=" * 64)
 print(f"根目录 : {ROOT}")
 print(f"版本   : {versions}")

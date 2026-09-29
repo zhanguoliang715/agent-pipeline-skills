@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.6
+  version: 1.4.7
   author: agent-pipeline
   upstream: Product Manager
   downstream: Software Developer（通过后）/ Product Manager（驳回后）
@@ -57,7 +57,7 @@ metadata:
 **交稿前必跑**（在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个，有占位残留替换成真实内容。
 
 ```
-# 需求评审报告：<PRD 标题>
+# 需求评审报告：PRD 标题
 ## 评审结论：YES（通过）/ NO（驳回）
 ## 评审轮次：第 N 次（首审 / 第 1 次重审 / 第 2 次重审）
 ## 一、各维度核查结果

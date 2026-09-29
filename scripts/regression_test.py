@@ -176,6 +176,22 @@ def _(tmp):
     return run(CHECK_PRD, f) == 2
 
 
+@test("check_prd 尖括号占位=2")
+def _(tmp):
+    # 尖括号 <角色> 这类未替换占位必须被拦（门禁正则含 <...>，自动链接除外）
+    f = w("prd_angle.md", tmp / "prd_angle.md",
+          PRD_TEN.replace("目标用户：新用户", "目标用户：<角色>"))
+    return run(CHECK_PRD, f) == 2
+
+
+@test("check_prd markdown自动链接不误伤=0")
+def _(tmp):
+    # <https://...> 是 markdown 自动链接语法，不是占位，必须放行
+    f = w("prd_autolink.md", tmp / "prd_autolink.md",
+          PRD_TEN.replace("- 外部依赖：无", "- 外部依赖：无\n- 参考链接：<https://example.com>"))
+    return run(CHECK_PRD, f) == 0
+
+
 @test("check_prd 文件不存在=3")
 def _(tmp):
     return run(CHECK_PRD, str(tmp / "nope.md")) == 3
@@ -236,6 +252,14 @@ def _(tmp):
           "# 评审报告\n结论：NO\n## 完整性\n完整。\n## 可执行性\n可执行。\n"
           "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
           "## 问题清单\n- [阻断] 缺少验收标准 → 补充\n")
+    return run(CHECK_REVIEW, f) == 2
+
+
+@test("check_review 尖括号占位=2")
+def _(tmp):
+    # 尖括号 <角色> 未替换占位必须被拦（与 check_prd 同口径）
+    f = w("review_angle.md", tmp / "review_angle.md",
+          REVIEW_OK.replace("完整。", "完整。<角色>"))
     return run(CHECK_REVIEW, f) == 2
 
 
