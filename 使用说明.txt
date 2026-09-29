@@ -1,9 +1,9 @@
 软件开发流水线 Skill 使用说明
 =================================
 
-这套东西把"写需求 -> 评审 -> 开发 -> 测试 -> 安全攻防"固化成五个独立 Skill，
-另加一个总调度 pipeline-orchestrator 把它们串成流水线，靠固定文件名和门禁
-规则衔接，不靠口头交接。
+一套把"写需求 -> 评审 -> 开发 -> 测试 -> 安全攻防"固化成六个独立 Skill 的工作区：
+棒 1-5 是五个单棒，pipeline-orchestrator 是总调度。靠固定文件名和门禁脚本衔接，
+不靠口头交接。单棒可独立部署，整套由总调度编排。
 
 --------------------------------------------------
 目录结构
@@ -15,16 +15,18 @@ D:\agent skill\
 ├── qa-tester\                  棒4：功能测试
 ├── security-pentester\          棒5：安全攻防（终点）
 ├── pipeline-orchestrator\      总调度：一句话跑完整条流水线（不可单独部署）
-├── scripts\                    仓库级（仅整套部署需要）
+├── scripts\                    仓库级：仅整套部署需要
 │   ├── regression_test.py      行为回归测试（机器实测退出码契约）
 │   └── smoke_pipeline.py       端到端冒烟（五棒门禁链 + 打回/修复路由）
-├── .github\workflows\           CI：validate + regression + smoke（GitHub Actions，仅整套部署需要）
+├── .github\workflows\           CI：validate + regression + smoke（仅整套部署需要）
 ├── validate_pipeline.py        全流水线一致性校验器（仅整套部署需要）
-├── USAGE.md                     详细使用说明
+├── 更新日志.md                   每次 GitHub 上传的变更记录（文件级备份）
+├── USAGE.md                     详细使用说明（英文门面文档）
 ├── README.md                    GitHub 门面文档
 ├── 使用说明.txt                  本文件（中文快速上手）
 ├── 提示词模板.txt                傻瓜式提示词
-└── LICENSE                      MIT 协议
+├── LICENSE                      MIT 协议
+└── .gitignore
 
 每个 skill 目录内部：
   SKILL.md           指令入口
@@ -32,10 +34,10 @@ D:\agent skill\
   scripts\           可执行校验脚本
 
 --------------------------------------------------
-独立部署
+独立部署（棒 1-5）
 --------------------------------------------------
-棒1-5（五个单棒）各自可单独拷出使用，不需要整套仓库、orchestrator、
-仓库级脚本或 CI。拷走整个棒目录后，以该棒目录为 CWD 跑校验脚本：
+五个单棒各自可单独拷出使用，不需要整套仓库、orchestrator、仓库级脚本或 CI。
+拷走整个棒目录后，以该棒目录为 CWD 跑校验脚本：
 
   棒1 product-manager        python scripts\check_prd.py 01-prd.md
   棒2 requirement-reviewer   python scripts\check_review.py 02-requirement-review.md
@@ -43,23 +45,25 @@ D:\agent skill\
   棒4 qa-tester              python scripts\check_qa.py 04-qa-test-report.md
   棒5 security-pentester     python scripts\scan_security.py 03-source\
 
-单棒目录是自包含的：SKILL.md（文末有"独立部署"章节）+ references\（配套
-本棒自身）+ scripts\，产物文件名固定不变。运行时依赖见各棒 SKILL.md（四棒
-只用标准库，安全棒另需 pip install "bandit==1.9.4"，不装只跑正则层）。
-pipeline-orchestrator 不可单独部署（只调度不产出，必须与五棒同仓库根）。
+单棒目录是自包含的：SKILL.md（文末有"独立部署"章节）+ references\（配套本棒
+自身，不悬空）+ scripts\，产物文件名固定不变。运行时依赖见各棒 SKILL.md：
+四棒只用标准库（Python 3.9+），安全棒另需 pip install "bandit==1.9.4"，
+不装只跑正则层。pipeline-orchestrator 不可单独部署（只调度不产出，必须与
+五棒同仓库根）。
 
 --------------------------------------------------
 角色职责和产出
 --------------------------------------------------
 棒0 pipeline-orchestrator（总调度，先跑它）
-  干什么：按顺序叫 1-5 棒干活，检查每棒产物和门禁脚本，
-          打回自动路由（评审 NO 退回 PM、测试致命打回开发、
-          安全高危修完再攻），最后打包五件套交付
+  产出：无（只调度）
+  干什么：按顺序叫 1-5 棒干活，检查每棒产物和门禁脚本，打回自动路由
+          （评审 NO 退回 PM、测试致命打回开发、安全高危修完再攻），
+          最后打包五件套交付
   门禁：确认走完整条流水线 + 确认工作目录，才启动
 
 棒1 product-manager
   产出：01-prd.md
-  干什么：把原始想法写成边界清楚、可验收的 PRD
+  干什么：把原始想法写成边界清楚、可验收的 PRD（十节齐全）
   门禁：先问"你真要做吗"，最多 3 轮追问
 
 棒2 requirement-reviewer
@@ -99,7 +103,7 @@ pipeline-orchestrator 不可单独部署（只调度不产出，必须与五棒�
 orchestrator 会从棒 1 一路叫到棒 5，打回自动路由，最后给你五件套清单。
 也可以单棒直接叫：说"帮我写 PRD / 审需求 / 写代码 / 测程序 / 做安全测试"。
 
-每棒交稿前跑对应脚本做结构校验（在工作区根目录）：
+每棒交稿前跑对应脚本做结构校验（整套部署在工作区根目录）：
 
   python product-manager\scripts\check_prd.py 01-prd.md
   python requirement-reviewer\scripts\check_review.py 02-requirement-review.md
@@ -130,12 +134,40 @@ orchestrator 会从棒 1 一路叫到棒 5，打回自动路由，最后给你�
   5 = 扫描工具自身故障（bandit 崩/JSON 坏/有 .py 但 0 行），不能当干净
 
 --------------------------------------------------
+history/ 留档
+--------------------------------------------------
+01-05 是固定文件名，每次覆盖写之前把上一版复制到 history\：
+  命名：history\产物主干-r最大序号+1-YYYYMMDDTHHMM
+        （如 history\02-requirement-review-r2-20260928T1435.md）
+  r 取已有最大序号 +1，不要数文件个数（部分清理过会重号吞档）
+  03 是目录，归档时整个复制但排除 .git/依赖/构建产物
+  归档即只读，history/ 只进不删，清理由你决定
+
+--------------------------------------------------
+版本维护规矩
+--------------------------------------------------
+- 各棒独立发版：改了哪个 SKILL.md，就只升那一棒的 version；没动的棒不跟着升
+- validate 会警告版本不一致（这是正常独立发版，不是错误）
+- 改了某个 references\*.md，它自己的"本文件版本"升，SKILL.md 的配套声明
+  不写死具体版本
+- references 文件必须有"本文件版本：x.y.z"和"## 修订历史"段
+- 改完跑 validate_pipeline.py 确认无悬空、无结构错误
+
+--------------------------------------------------
+更新日志（GitHub 上传必做）
+--------------------------------------------------
+每次向 GitHub 上传/推送（新增、修改、提交），必须：
+  1. 在 更新日志.md 里按"日期 + 提交号"追加一条变更记录（改了什么、版本变化）
+  2. 随仓库一起提交推送，实现文件级备份
+
+--------------------------------------------------
 环境要求
 --------------------------------------------------
 - Python 3.9 以上
-- 四棒检查脚本和回归测试只用标准库，不用装任何东西
+- 四棒检查脚本、校验器、回归测试只用标准库，不用装任何东西
 - 安全棒可选深度扫描：pip install "bandit==1.9.4"
   不装也能跑，只跑正则粗扫
+- Windows / macOS / Linux 均可，路径全用 pathlib
 
 --------------------------------------------------
 自检
