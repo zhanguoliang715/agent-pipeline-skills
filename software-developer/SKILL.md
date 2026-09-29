@@ -5,7 +5,7 @@ metadata:
   role: Software Developer
   platform: cross-platform
   stage: 3
-  version: 1.4.3
+  version: 1.4.4
   author: agent-pipeline
   upstream: Requirement Reviewer（YES 的 PRD）
   downstream: QA Tester
@@ -49,7 +49,7 @@ metadata:
 ```
 03-source/
 ├── README.md            # 如何安装依赖、如何启动、如何验证每个 FR
-├── <源代码文件>          # 按模块组织
+├── 源代码文件            # 按模块组织
 └── (可选) 示例数据/配置样例
 ```
 

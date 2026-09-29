@@ -5,7 +5,7 @@ metadata:
   role: QA Tester
   platform: cross-platform
   stage: 4
-  version: 1.4.3
+  version: 1.4.4
   author: agent-pipeline
   upstream: Software Developer
   downstream: Security Pentester（通过后）/ Software Developer（打回后）
@@ -60,7 +60,7 @@ metadata:
 输出测试报告（纯文字结论，不依赖 emoji 渲染）：
 
 ```
-# 测试报告：<项目名>
+# 测试报告：项目名
 ## 测试结论：通过（可进入安全测试）/ 打回修复
 ## 一、测试环境
 - 语言/版本、操作系统、依赖版本

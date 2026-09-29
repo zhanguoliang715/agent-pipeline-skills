@@ -3,7 +3,7 @@ name: pipeline-orchestrator
 description: 软件开发流水线总调度。当用户说"走五棒流水线/从需求做到上线/做个完整项目/全套开发流程"时使用，按顺序串联 product-manager -> requirement-reviewer -> software-developer -> qa-tester -> security-pentester，每棒检查产物和校验脚本，打回自动路由，最后打包五件套交付。不要用于：只写需求、只测功能、只做安全测试等单棒任务（直接调对应棒即可）。
 metadata:
   platform: cross-platform
-  version: 1.0.2
+  version: 1.0.3
   references: 无（总调度角色，无独立知识库文件）
 ---
 
@@ -82,7 +82,7 @@ metadata:
 五棒全过（02=YES、04 无致命 bug、05 无未修 HIGH）后，告诉用户：
 
 ```
-流水线完成，五件套在 <工作目录>：
+流水线完成，五件套在工作目录：
   01-prd.md
   02-requirement-review.md（结论 YES）
   03-source/
