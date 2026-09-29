@@ -14,18 +14,32 @@ repo-root/
 ├── qa-tester/                  # 棒 4：功能测试
 ├── security-pentester/          # 棒 5：安全攻防（终点）
 │   └── scripts/scan_security.py # 危险代码自动扫描（正则 + bandit wrapper）
-├── pipeline-orchestrator/       # 总调度（第 0 棒，串 1-5）
-├── scripts/
+├── pipeline-orchestrator/       # 总调度（第 0 棒，串 1-5，不可单独部署）
+├── scripts/                     # 仓库级（仅整套部署需要）
 │   ├── regression_test.py       # 行为回归测试（机器实测退出码契约）
 │   └── smoke_pipeline.py        # 端到端冒烟（五棒门禁链 + 打回/修复路由）
-├── .github/workflows/           # CI：validate + regression + smoke（GitHub Actions）
-├── validate_pipeline.py         # 全流水线一致性校验器（根目录）
+├── .github/workflows/           # CI：validate + regression + smoke（GitHub Actions，仅整套部署需要）
+├── validate_pipeline.py         # 全流水线一致性校验器（根目录，仅整套部署需要）
 ├── 使用说明.txt                  # 中文版快速上手
 ├── 提示词模板.txt                # 傻瓜式提示词
 └── USAGE.md                    # 本文件
 ```
 
 每个 skill 目录内部标准结构：`SKILL.md`（指令入口）+ `references/`（知识库）+ 可选 `scripts/`。
+
+## 独立部署
+
+五个单棒（棒 1-5）各自可单独拷出使用，不需要整套仓库、orchestrator、仓库级脚本或 CI。拷贝整个棒目录后以该目录为 CWD 跑对应脚本即可：
+
+| 棒 | 拷走目录 | 独立部署校验命令（CWD=棒目录） | 运行时依赖 |
+|---|---|---|---|
+| 1 | `product-manager/` | `python scripts/check_prd.py 01-prd.md` | Python ≥ 3.9，无第三方包 |
+| 2 | `requirement-reviewer/` | `python scripts/check_review.py 02-requirement-review.md` | Python ≥ 3.9，无第三方包 |
+| 3 | `software-developer/` | `python scripts/check_source.py 03-source/` | Python ≥ 3.9，运行被测程序另按 README |
+| 4 | `qa-tester/` | `python scripts/check_qa.py 04-qa-test-report.md` | Python ≥ 3.9，运行被测程序另按 README |
+| 5 | `security-pentester/` | `python scripts/scan_security.py 03-source/` | Python ≥ 3.9 + `pip install "bandit==1.9.4"`（不装只跑正则层） |
+
+单棒目录自包含：`SKILL.md`（含"独立部署"章节）+ `references/`（配套本棒自身，不悬空）+ `scripts/`；产物文件名固定不变。`pipeline-orchestrator` 不可单独部署（只调度不产出，必须与五棒同仓库根）；仓库级 `scripts/`、`validate_pipeline.py`、`.github/workflows/` 仅整套部署需要。
 
 ## 棒次一览
 

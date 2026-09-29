@@ -5,7 +5,7 @@ metadata:
   role: QA Tester
   platform: cross-platform
   stage: 4
-  version: 1.4.4
+  version: 1.4.5
   author: agent-pipeline
   upstream: Software Developer
   downstream: Security Pentester（通过后）/ Software Developer（打回后）
@@ -78,7 +78,17 @@ metadata:
 
 bug 分级定义见 [references/bug-levels.md](references/bug-levels.md)，用例设计方法见 [references/test-case-design.md](references/test-case-design.md)。
 
-**交报告前必跑**（在工作区根目录）：`python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。退出码非 0 不准交：缺结论补结论，有未修复致命项要么修要么明确写"残留风险"。
+**交报告前必跑**（整套部署在工作区根目录）：`python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。退出码非 0 不准交：缺结论补结论，有未修复致命项要么修要么明确写"残留风险"。
+
+## 独立部署
+
+本棒可单独拷出使用，不依赖仓库其他文件：
+
+- 拷走 `qa-tester/` 整个目录（含 `SKILL.md`、`references/`、`scripts/`）即可独立运行。
+- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_qa.py 04-qa-test-report.md`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
+- 运行时依赖：Python 3.9+；运行被测程序按 README 声明的运行时。
+- `references/` 随棒携带，顶部"配套 SKILL"指本棒自身，不悬空。
+- 产物文件名固定为 `04-qa-test-report.md`，不依赖其他棒目录。
 
 ## 测试纪律
 

@@ -5,7 +5,7 @@ metadata:
   role: Product Manager
   platform: cross-platform
   stage: 1
-  version: 1.4.7
+  version: 1.4.8
   author: agent-pipeline
   upstream: 业务方/用户口头想法
   downstream: Requirement Reviewer
@@ -82,7 +82,17 @@ metadata:
 
 模板见 [references/prd-template.md](references/prd-template.md)（第 1 节开头含"一句话概括"）。
 
-**交稿前必跑**（在工作区根目录）：`python product-manager/scripts/check_prd.py 01-prd.md`。退出码非 0 不准交：缺节补节，有占位残留替换成真实内容。
+**交稿前必跑**（整套部署在工作区根目录）：`python product-manager/scripts/check_prd.py 01-prd.md`。退出码非 0 不准交：缺节补节，有占位残留替换成真实内容。
+
+## 独立部署
+
+本棒可单独拷出使用，不依赖仓库其他文件：
+
+- 拷走 `product-manager/` 整个目录（含 `SKILL.md`、`references/`、`scripts/`）即可独立运行。
+- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_prd.py 01-prd.md`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
+- 运行时依赖：Python 3.9+，无第三方包。
+- `references/` 随棒携带，顶部"配套 SKILL"指本棒自身，不悬空。
+- 产物文件名固定为 `01-prd.md`，不依赖其他棒目录。
 
 ## 流转门禁
 

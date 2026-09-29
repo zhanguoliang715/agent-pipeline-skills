@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.7
+  version: 1.4.8
   author: agent-pipeline
   upstream: Product Manager
   downstream: Software Developer（通过后）/ Product Manager（驳回后）
@@ -54,7 +54,17 @@ metadata:
 
 输出一份评审报告（纯文字结论，不依赖 emoji 渲染），**文件名固定为 `02-requirement-review.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。
 
-**交稿前必跑**（在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个，有占位残留替换成真实内容。
+**交稿前必跑**（整套部署在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个，有占位残留替换成真实内容。
+
+## 独立部署
+
+本棒可单独拷出使用，不依赖仓库其他文件：
+
+- 拷走 `requirement-reviewer/` 整个目录（含 `SKILL.md`、`references/`、`scripts/`）即可独立运行。
+- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_review.py 02-requirement-review.md`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
+- 运行时依赖：Python 3.9+，无第三方包。
+- `references/` 随棒携带，顶部"配套 SKILL"指本棒自身，不悬空。
+- 产物文件名固定为 `02-requirement-review.md`，不依赖其他棒目录。
 
 ```
 # 需求评审报告：PRD 标题

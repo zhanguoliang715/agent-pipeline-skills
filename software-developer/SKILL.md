@@ -5,7 +5,7 @@ metadata:
   role: Software Developer
   platform: cross-platform
   stage: 3
-  version: 1.4.4
+  version: 1.4.5
   author: agent-pipeline
   upstream: Requirement Reviewer（YES 的 PRD）
   downstream: QA Tester
@@ -62,7 +62,17 @@ README 里必须写清楚：
 
 详细工程规范见 [references/coding-standards.md](references/coding-standards.md)。
 
-**交包前必跑**（在工作区根目录）：`python software-developer/scripts/check_source.py 03-source/`。退出码非 0 不准交：缺 README 补 README，README 没启动命令补启动命令，依赖目录从交付包删掉。
+**交包前必跑**（整套部署在工作区根目录）：`python software-developer/scripts/check_source.py 03-source/`。退出码非 0 不准交：缺 README 补 README，README 没启动命令补启动命令，依赖目录从交付包删掉。
+
+## 独立部署
+
+本棒可单独拷出使用，不依赖仓库其他文件：
+
+- 拷走 `software-developer/` 整个目录（含 `SKILL.md`、`references/`、`scripts/`）即可独立运行。
+- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_source.py 03-source/`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
+- 运行时依赖：Python 3.9+；实际运行被测程序按 PRD/README 声明的运行时。
+- `references/` 随棒携带，顶部"配套 SKILL"指本棒自身，不悬空。
+- 产物目录名固定为 `03-source/`，不依赖其他棒目录。
 
 ## 被测试打回时
 

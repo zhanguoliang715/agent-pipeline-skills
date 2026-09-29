@@ -14,12 +14,12 @@ D:\agent skill\
 ├── software-developer\          棒3：写代码
 ├── qa-tester\                  棒4：功能测试
 ├── security-pentester\          棒5：安全攻防（终点）
-├── pipeline-orchestrator\      总调度：一句话跑完整条流水线
-├── scripts\
+├── pipeline-orchestrator\      总调度：一句话跑完整条流水线（不可单独部署）
+├── scripts\                    仓库级（仅整套部署需要）
 │   ├── regression_test.py      行为回归测试（机器实测退出码契约）
 │   └── smoke_pipeline.py       端到端冒烟（五棒门禁链 + 打回/修复路由）
-├── .github\workflows\           CI：validate + regression + smoke（GitHub Actions）
-├── validate_pipeline.py        全流水线一致性校验器
+├── .github\workflows\           CI：validate + regression + smoke（GitHub Actions，仅整套部署需要）
+├── validate_pipeline.py        全流水线一致性校验器（仅整套部署需要）
 ├── USAGE.md                     详细使用说明
 ├── README.md                    GitHub 门面文档
 ├── 使用说明.txt                  本文件（中文快速上手）
@@ -30,6 +30,23 @@ D:\agent skill\
   SKILL.md           指令入口
   references\        知识库（模板、清单、规范）
   scripts\           可执行校验脚本
+
+--------------------------------------------------
+独立部署
+--------------------------------------------------
+棒1-5（五个单棒）各自可单独拷出使用，不需要整套仓库、orchestrator、
+仓库级脚本或 CI。拷走整个棒目录后，以该棒目录为 CWD 跑校验脚本：
+
+  棒1 product-manager        python scripts\check_prd.py 01-prd.md
+  棒2 requirement-reviewer   python scripts\check_review.py 02-requirement-review.md
+  棒3 software-developer     python scripts\check_source.py 03-source\
+  棒4 qa-tester              python scripts\check_qa.py 04-qa-test-report.md
+  棒5 security-pentester     python scripts\scan_security.py 03-source\
+
+单棒目录是自包含的：SKILL.md（文末有"独立部署"章节）+ references\（配套
+本棒自身）+ scripts\，产物文件名固定不变。运行时依赖见各棒 SKILL.md（四棒
+只用标准库，安全棒另需 pip install "bandit==1.9.4"，不装只跑正则层）。
+pipeline-orchestrator 不可单独部署（只调度不产出，必须与五棒同仓库根）。
 
 --------------------------------------------------
 角色职责和产出

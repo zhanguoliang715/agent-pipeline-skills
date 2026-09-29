@@ -3,7 +3,7 @@ name: pipeline-orchestrator
 description: 软件开发流水线总调度。当用户说"走五棒流水线/从需求做到上线/做个完整项目/全套开发流程"时使用，按顺序串联 product-manager -> requirement-reviewer -> software-developer -> qa-tester -> security-pentester，每棒检查产物和校验脚本，打回自动路由，最后打包五件套交付。不要用于：只写需求、只测功能、只做安全测试等单棒任务（直接调对应棒即可）。
 metadata:
   platform: cross-platform
-  version: 1.0.3
+  version: 1.0.4
   references: 无（总调度角色，无独立知识库文件）
 ---
 
@@ -22,9 +22,17 @@ metadata:
 
 ## 工作目录与 CWD 约定
 
+> 本节适用于**整套流水线部署**场景（五棒 + 本调度器在同一仓库根下）。若只使用单棒，请直接读对应棒 SKILL.md 的"独立部署"章节，不需要本调度器。
+
 - 在用户指定位置建一个空工作目录，所有 01-05 产物和 history/ 都放这个目录根下。
 - 跑校验脚本时，**CWD 必须是流水线根目录（即本仓库里五棒目录的上一级）**，命令写成 `python product-manager/scripts/check_prd.py 01-prd.md`——两个相对路径都从仓库根解析。不要 cd 进工作目录再跑脚本，否则脚本找不到。
 - 产物路径相对于工作目录（`01-prd.md`、`03-source/` 等）。
+
+## 部署边界
+
+- **本调度器不可单独部署**：orchestrator 只负责调度五棒，它本身不产出文件，必须与五棒同仓库根部署，CWD 契约见上文。
+- **五棒各自可独立部署**：拷贝任一棒目录（`SKILL.md` + `references/` + `scripts/`）即可单独使用，以该棒目录为 CWD 运行该棒的校验脚本（具体命令见各棒 SKILL.md 的"独立部署"章节）。
+- 独立部署的单棒不依赖仓库根下的校验器、行为回归/端到端冒烟脚本与 CI 工作流，这些仅整套部署需要。
 
 ## 流水线顺序（固定，不可跳棒）
 

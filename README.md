@@ -65,17 +65,31 @@
 │   └── scripts/           # scan_danger.py, scan_security.py
 ├── pipeline-orchestrator/  # 总调度（一句话跑完整条流水线）
 │   └── SKILL.md
-├── scripts/
+├── scripts/                 # 仓库级（仅整套部署需要）
 │   ├── regression_test.py   # 行为回归测试（机器实测退出码契约）
 │   └── smoke_pipeline.py    # 端到端冒烟（五棒门禁链 + 打回/修复路由）
-├── .github/workflows/      # CI：validate + regression + smoke（GitHub Actions）
-├── validate_pipeline.py    # 全流水线一致性校验
+├── .github/workflows/      # CI：validate + regression + smoke（GitHub Actions，仅整套部署需要）
+├── validate_pipeline.py    # 全流水线一致性校验（仅整套部署需要）
 ├── USAGE.md                # 详细使用说明
 ├── 使用说明.txt             # 中文版快速上手
 ├── 提示词模板.txt           # 傻瓜式提示词
 ├── LICENSE
 └── .gitignore
 ```
+
+## 独立部署
+
+五个单棒（棒 1-5）各自可单独拷出使用，**不需要**整套仓库、orchestrator、仓库级脚本或 CI：
+
+| 棒 | 拷走目录 | 独立部署校验命令（以该棒目录为 CWD） |
+|---|---|---|
+| 1 | `product-manager/` | `python scripts/check_prd.py 01-prd.md` |
+| 2 | `requirement-reviewer/` | `python scripts/check_review.py 02-requirement-review.md` |
+| 3 | `software-developer/` | `python scripts/check_source.py 03-source/` |
+| 4 | `qa-tester/` | `python scripts/check_qa.py 04-qa-test-report.md` |
+| 5 | `security-pentester/` | `python scripts/scan_security.py 03-source/` |
+
+每个单棒目录是自包含的：`SKILL.md`（含"独立部署"章节）+ `references/` + `scripts/`，运行时依赖与产物命名见各棒 SKILL.md。`pipeline-orchestrator` 不可单独部署（它只调度不产出，必须与五棒同仓库根），仓库级 `scripts/`、`validate_pipeline.py`、`.github/` 也仅整套部署需要。
 
 ## 快速开始
 
