@@ -21,7 +21,6 @@ repo-root/
 ├── .github/workflows/           # CI：validate + regression + smoke（GitHub Actions，仅整套部署需要）
 ├── validate_pipeline.py         # 全流水线一致性校验器（根目录，仅整套部署需要）
 ├── 使用说明.txt                  # 中文版快速上手
-├── 提示词模板.txt                # 傻瓜式提示词
 └── USAGE.md                    # 本文件
 ```
 

@@ -72,7 +72,6 @@
 ├── validate_pipeline.py    # 全流水线一致性校验（仅整套部署需要）
 ├── USAGE.md                # 详细使用说明
 ├── 使用说明.txt             # 中文版快速上手
-├── 提示词模板.txt           # 傻瓜式提示词
 ├── LICENSE
 └── .gitignore
 ```

@@ -20,3 +20,6 @@ history/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 本地留存文件（不上传 GitHub）
+提示词模板.txt

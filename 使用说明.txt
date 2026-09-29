@@ -24,7 +24,6 @@ D:\agent skill\
 ├── USAGE.md                     详细使用说明（英文门面文档）
 ├── README.md                    GitHub 门面文档
 ├── 使用说明.txt                  本文件（中文快速上手）
-├── 提示词模板.txt                傻瓜式提示词
 ├── LICENSE                      MIT 协议
 └── .gitignore
 
