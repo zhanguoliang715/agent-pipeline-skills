@@ -15,7 +15,10 @@ D:\agent skill\
 ├── qa-tester\                  棒4：功能测试
 ├── security-pentester\          棒5：安全攻防（终点）
 ├── pipeline-orchestrator\      总调度：一句话跑完整条流水线
-├── scripts\regression_test.py  行为回归测试（机器实测退出码契约）
+├── scripts\
+│   ├── regression_test.py      行为回归测试（机器实测退出码契约）
+│   └── smoke_pipeline.py       端到端冒烟（五棒门禁链 + 打回/修复路由）
+├── .github\workflows\           CI：validate + regression + smoke（GitHub Actions）
 ├── validate_pipeline.py        全流水线一致性校验器
 ├── USAGE.md                     详细使用说明
 ├── README.md                    GitHub 门面文档
@@ -120,12 +123,14 @@ orchestrator 会从棒 1 一路叫到棒 5，打回自动路由，最后给你�
 --------------------------------------------------
 自检
 --------------------------------------------------
-改完任何 skill 或脚本后，跑两个校验：
+改完任何 skill 或脚本后，跑三个校验：
 
   python validate_pipeline.py         # 结构一致性（六棒、references 不悬空、scripts 存在）
   python scripts\regression_test.py   # 行为回归（六棒脚本退出码契约，机器实测）
+  python scripts\smoke_pipeline.py    # 端到端冒烟（五棒门禁链 + 打回/修复路由，机器实测）
 
-两个都退出 0 = 全绿。validate 管"结构齐不齐"，regression 管"行为对不对"。
+三个都退出 0 = 全绿。validate 管"结构齐不齐"，regression 管"行为对不对"，
+冒烟管"整条调度链跑不跑得通"。
 
 --------------------------------------------------
 GitHub 仓库

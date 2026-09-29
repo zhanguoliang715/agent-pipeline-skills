@@ -66,7 +66,9 @@
 ├── pipeline-orchestrator/  # 总调度（一句话跑完整条流水线）
 │   └── SKILL.md
 ├── scripts/
-│   └── regression_test.py   # 行为回归测试（机器实测退出码契约）
+│   ├── regression_test.py   # 行为回归测试（机器实测退出码契约）
+│   └── smoke_pipeline.py    # 端到端冒烟（五棒门禁链 + 打回/修复路由）
+├── .github/workflows/      # CI：validate + regression + smoke（GitHub Actions）
 ├── validate_pipeline.py    # 全流水线一致性校验
 ├── USAGE.md                # 详细使用说明
 ├── 使用说明.txt             # 中文版快速上手
@@ -125,9 +127,10 @@ python security-pentester/scripts/scan_security.py 03-source/
 ```bash
 python validate_pipeline.py     # 结构一致性（六棒 SKILL.md、references 不悬空、scripts 存在、固定产物名）
 python scripts/regression_test.py  # 行为回归（六棒脚本退出码契约，机器实测）
+python scripts/smoke_pipeline.py   # 端到端冒烟（五棒门禁链 + 打回/修复路由，机器实测）
 ```
 
-两个都退出 0 = 全绿。前者管"结构齐不齐"，后者管"行为对不对"——改 `scripts/` 下任何脚本逻辑，validate 可能照样绿，必须跑回归。
+三个都退出 0 = 全绿。validate 管"结构齐不齐"，regression 管"行为对不对"，冒烟管"整条调度链跑不跑得通"——改 `scripts/` 下任何脚本逻辑，validate 可能照样绿，必须跑回归和冒烟。
 
 ## 关键设计
 

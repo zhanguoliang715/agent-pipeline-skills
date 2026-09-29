@@ -1,0 +1,29 @@
+name: pipeline-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install security scanner dependency
+        run: pip install bandit
+
+      - name: Structure & doc consistency (validate_pipeline)
+        run: python validate_pipeline.py
+
+      - name: Behavior contract regression (42 cases)
+        run: python scripts/regression_test.py
+
+      - name: End-to-end smoke (5-gate chain + reject/fix routing)
+        run: python scripts/smoke_pipeline.py

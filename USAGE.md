@@ -15,7 +15,10 @@ repo-root/
 ├── security-pentester/          # 棒 5：安全攻防（终点）
 │   └── scripts/scan_security.py # 危险代码自动扫描（正则 + bandit wrapper）
 ├── pipeline-orchestrator/       # 总调度（第 0 棒，串 1-5）
-├── scripts/regression_test.py   # 行为回归测试（机器实测退出码契约）
+├── scripts/
+│   ├── regression_test.py       # 行为回归测试（机器实测退出码契约）
+│   └── smoke_pipeline.py        # 端到端冒烟（五棒门禁链 + 打回/修复路由）
+├── .github/workflows/           # CI：validate + regression + smoke（GitHub Actions）
 ├── validate_pipeline.py         # 全流水线一致性校验器（根目录）
 ├── 使用说明.txt                  # 中文版快速上手
 ├── 提示词模板.txt                # 傻瓜式提示词
@@ -142,9 +145,10 @@ python security-pentester/scripts/scan_security.py 03-source/
 
 ```bash
 python scripts/regression_test.py
+python scripts/smoke_pipeline.py    # 端到端冒烟：五棒门禁链 + 打回/修复路由
 ```
 
-`validate_pipeline.py` 只查结构，证明不了行为正确。回归测试用真实样本逐个断言六棒脚本的退出码契约：
+`validate_pipeline.py` 只查结构，证明不了行为正确。回归测试用真实样本逐个断言六棒脚本的退出码契约；冒烟测试按 orchestrator 调度顺序把五棒门禁链整体跑一遍，并验证"打回 -> 修复 -> 再通过"路由，防止单脚本全绿但整条流水线接不上。
 
 - 四棒 check 脚本：0 通过 / 1 缺内容 / 2 业务警告 / 3 路径错 / 缺参 2；
 - 安全棒正则层：干净 JS=0、硬编码密钥=1、eval=1、SQL 拼接=4、目录错=3；
