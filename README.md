@@ -109,7 +109,7 @@ python security-pentester/scripts/scan_security.py 03-source/
 
 ### 退出码
 
-下面是安全棒 `scan_security.py` 的退出码。其他四棒脚本的 0/1/2/3 含义各不同（2 号在 check_prd=占位残留、check_source=依赖目录混入、check_qa=未修致命项），以各脚本 `--help` 或 USAGE.md 为准。
+下面是安全棒 `scan_security.py` 的退出码。其他四棒脚本的 0/1/2/3 含义各不同（2 号在 check_prd=占位残留、check_review=占位残留、check_source=依赖目录混入、check_qa=未修致命项），以各脚本 `--help` 或 USAGE.md 为准。
 
 | 码 | 含义（安全棒） |
 |---|---|

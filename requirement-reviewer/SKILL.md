@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.3
+  version: 1.4.4
   author: agent-pipeline
   upstream: Product Manager
   downstream: Software Developer（通过后）/ Product Manager（驳回后）
@@ -54,7 +54,7 @@ metadata:
 
 输出一份评审报告（纯文字结论，不依赖 emoji 渲染），**文件名固定为 `02-requirement-review.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。
 
-**交稿前必跑**（在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个。
+**交稿前必跑**（在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个，有占位残留替换成真实内容。
 
 ```
 # 需求评审报告：<PRD 标题>

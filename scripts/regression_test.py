@@ -181,6 +181,14 @@ def _(tmp):
     return run(CHECK_REVIEW, str(tmp / "nope.md")) == 3
 
 
+@test("check_review 占位残留=2")
+def _(tmp):
+    f = w("review_ph.md", tmp / "review_ph.md",
+          "# 评审报告\n结论：YES\n## 完整性\n[待确认]\n## 可执行性\n可执行。\n"
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
+    return run(CHECK_REVIEW, f) == 2
+
+
 @test("check_review 缺参=2")
 def _(tmp):
     return run(CHECK_REVIEW) == 2

@@ -65,7 +65,7 @@
 | 棒 | 命令 | 查什么 |
 |---|---|---|
 | PM | `python product-manager/scripts/check_prd.py 01-prd.md` | PRD 十节齐全、无占位残留 |
-| RR | `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md` | 有 YES/NO/退回结论、六维度全覆盖 |
+| RR | `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md` | 有 YES/NO/退回结论、六维度全覆盖、无占位残留 |
 | SD | `python software-developer/scripts/check_source.py 03-source/` | README 存在且有启动命令、无依赖目录混入 |
 | QA | `python qa-tester/scripts/check_qa.py 04-qa-test-report.md` | 有结论、有 bug 清单、无未修复致命项 |
 | SP | `python security-pentester/scripts/scan_security.py 03-source/` | 危险代码扫描（正则粗扫 + bandit Python 深度扫） |
