@@ -1,7 +1,8 @@
-# 软件开发流水线五棒 Skill 使用说明
+# 软件开发流水线 Skill 使用说明
 
-一套把"写需求 → 评审 → 开发 → 测试 → 安全攻防"固化成五个独立 Skill 的工作区。
+一套把"写需求 → 评审 → 开发 → 测试 → 安全攻防"固化成六个独立 Skill 的工作区。
 每个角色一个目录，靠固定文件名和门禁规则串成流水线，不靠口头交接。
+`pipeline-orchestrator` 是总调度，一句话跑完整条。
 
 ## 目录结构
 
@@ -13,7 +14,11 @@
 ├── qa-tester/                  # 棒 4：功能测试
 ├── security-pentester/          # 棒 5：安全攻防（终点）
 │   └── scripts/scan_security.py # 危险代码自动扫描（正则 + bandit wrapper）
+├── pipeline-orchestrator/       # 总调度（第 0 棒，串 1-5）
+├── scripts/regression_test.py   # 行为回归测试（机器实测退出码契约）
 ├── validate_pipeline.py         # 全流水线一致性校验器（根目录）
+├── 使用说明.txt                  # 中文版快速上手
+├── 提示词模板.txt                # 傻瓜式提示词
 └── USAGE.md                    # 本文件
 ```
 
@@ -108,6 +113,20 @@ python security-pentester/scripts/scan_security.py 03-source/
 | 5 | 扫描工具自身故障（bandit 崩/JSON坏/有 .py 但 0 行），不能当干净 |
 
 **已知边界（别指望它全抓）**：单行匹配，跨行拼接不报；整行块注释（`/* */`、`<!-- -->`）会跳过，但块注释内部跨行的代码不识别；正则是启发式，有误报，用 `--ignore` 排除。它是第一道过滤网，不是替代人工攻防。
+
+### 3. 行为回归测试（改脚本逻辑后必跑）
+
+```bash
+python scripts/regression_test.py
+```
+
+`validate_pipeline.py` 只查结构，证明不了行为正确。回归测试用真实样本逐个断言六棒脚本的退出码契约：
+
+- 四棒 check 脚本：0 通过 / 1 缺内容 / 2 业务警告 / 3 路径错 / 缺参 2；
+- 安全棒正则层：干净 JS=0、硬编码密钥=1、eval=1、SQL 拼接=4、目录错=3；
+- 安全棒 wrapper：bandit 无关断言（纯 JS）+ bandit 已装时集成断言（空 .py=5）。
+
+任何 FAIL = 脚本行为漂移（退出码漂了、规则漏报/误报改了）。改 `scripts/` 下任何 `.py` 之后必须跑一次，全绿才提交。
 
 ### validate_pipeline.py 也只管结构，不管对错
 

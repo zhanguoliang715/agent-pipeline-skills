@@ -29,7 +29,7 @@
 └──────────────┘
 ```
 
-## 五棒职责
+## 单棒职责（棒 1-5；总调度 pipeline-orchestrator 见开头）
 
 | 棒 | 目录 | 产出 | 干什么 | 门禁 |
 |---|---|---|---|---|
@@ -65,6 +65,8 @@
 │   └── scripts/           # scan_danger.py, scan_security.py
 ├── pipeline-orchestrator/  # 总调度（一句话跑完整条流水线）
 │   └── SKILL.md
+├── scripts/
+│   └── regression_test.py   # 行为回归测试（机器实测退出码契约）
 ├── validate_pipeline.py    # 全流水线一致性校验
 ├── USAGE.md                # 详细使用说明
 ├── 使用说明.txt             # 中文版快速上手
@@ -121,10 +123,11 @@ python security-pentester/scripts/scan_security.py 03-source/
 ### 改完 skill 后自检
 
 ```bash
-python validate_pipeline.py
+python validate_pipeline.py     # 结构一致性（六棒 SKILL.md、references 不悬空、scripts 存在、固定产物名）
+python scripts/regression_test.py  # 行为回归（六棒脚本退出码契约，机器实测）
 ```
 
-检查五棒 SKILL.md 结构、references 不悬空、scripts 存在、固定产物名声明。退出 0 = 全绿。
+两个都退出 0 = 全绿。前者管"结构齐不齐"，后者管"行为对不对"——改 `scripts/` 下任何脚本逻辑，validate 可能照样绿，必须跑回归。
 
 ## 关键设计
 
@@ -134,6 +137,7 @@ python validate_pipeline.py
 - **环境隔离**：功能测试和攻防测试跑在独立实例上，不互相污染。
 - **独立发版**：改哪棒升哪棒的 version，不统一跟升。
 - **两层安全扫描**：正则粗扫（多语言）+ bandit（Python 深度扫），按文件:行号去重合并。
+- **行为回归**：`scripts/regression_test.py` 用真实样本断言六棒退出码契约，堵"改脚本逻辑但 validate 照绿"的单点风险。
 
 详细规则见 [USAGE.md](USAGE.md)。
 
