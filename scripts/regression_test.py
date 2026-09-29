@@ -160,6 +160,22 @@ def _(tmp):
     return run(CHECK_PRD, f) == 2
 
 
+@test("check_prd 新教法文字标注假设待确认=0")
+def _(tmp):
+    # SKILL.md 1.4.6 起：不再教 [假设待确认] 方括号占位，改用普通文字注明
+    f = w("prd_newway.md", tmp / "prd_newway.md",
+          PRD_TEN.replace("目标用户：新用户", "目标用户：新用户（假设待确认：是否含老用户回流）"))
+    return run(CHECK_PRD, f) == 0
+
+
+@test("check_prd 旧教法方括号假设待确认=2")
+def _(tmp):
+    # 旧教法写 [假设待确认] 必须仍被门禁拦下（占位残留契约不回退）
+    f = w("prd_oldway.md", tmp / "prd_oldway.md",
+          PRD_TEN.replace("目标用户：新用户", "目标用户：新用户 [假设待确认]"))
+    return run(CHECK_PRD, f) == 2
+
+
 @test("check_prd 文件不存在=3")
 def _(tmp):
     return run(CHECK_PRD, str(tmp / "nope.md")) == 3
@@ -200,6 +216,26 @@ def _(tmp):
     f = w("review_ph_full.md", tmp / "review_ph_full.md",
           "# 评审报告\n结论：YES\n## 完整性\n【待确认】\n## 可执行性\n可执行。\n"
           "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
+    return run(CHECK_REVIEW, f) == 2
+
+
+@test("check_review 新教法文字阻断建议=0")
+def _(tmp):
+    # SKILL.md 1.4.6 起：问题清单不再用 [阻断]/[建议] 方括号，改纯文字
+    f = w("review_newway.md", tmp / "review_newway.md",
+          "# 评审报告\n结论：NO\n## 完整性\n完整。\n## 可执行性\n可执行。\n"
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 问题清单\n- 阻断：缺少验收标准 → 补充\n- 建议：文案待定 → 后续优化\n")
+    return run(CHECK_REVIEW, f) == 0
+
+
+@test("check_review 旧教法方括号阻断=2")
+def _(tmp):
+    # 旧教法写 [阻断] 必须仍被门禁拦下（占位残留契约不回退）
+    f = w("review_oldway.md", tmp / "review_oldway.md",
+          "# 评审报告\n结论：NO\n## 完整性\n完整。\n## 可执行性\n可执行。\n"
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 问题清单\n- [阻断] 缺少验收标准 → 补充\n")
     return run(CHECK_REVIEW, f) == 2
 
 
