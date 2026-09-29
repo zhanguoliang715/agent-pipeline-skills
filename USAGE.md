@@ -7,7 +7,7 @@
 ## 目录结构
 
 ```
-<repo-root>/
+repo-root/
 ├── product-manager/            # 棒 1：写 PRD
 ├── requirement-reviewer/       # 棒 2：需求评审
 ├── software-developer/          # 棒 3：写代码
@@ -160,7 +160,7 @@ python scripts/regression_test.py
 
 01-05 是固定文件名，每次覆盖写之前把上一版复制到 `history/`：
 
-- 命名：`history/<产物主干>-r<最大序号+1>-<YYYYMMDDTHHMM>`，例如 `history/02-requirement-review-r2-20260928T1435.md`。
+- 命名：`history/产物主干-r最大序号+1-YYYYMMDDTHHMM`（产物主干、序号、时间戳按实际填写），例如 `history/02-requirement-review-r2-20260928T1435.md`。
 - **r 取已有最大序号 +1，不要数文件个数**（部分清理过时数个数会重号吞档）。
 - 03 是目录，归档时整个复制但排除 `.git`/依赖/构建产物。
 - 归档即只读，不回头改；history/ 只进不删，清理由你决定。
