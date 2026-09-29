@@ -5,7 +5,7 @@ metadata:
   role: Product Manager
   platform: cross-platform
   stage: 1
-  version: 1.4.8
+  version: 1.4.9
   author: agent-pipeline
   upstream: 业务方/用户口头想法
   downstream: Requirement Reviewer
@@ -82,7 +82,11 @@ metadata:
 
 模板见 [references/prd-template.md](references/prd-template.md)（第 1 节开头含"一句话概括"）。
 
-**交稿前必跑**（整套部署在工作区根目录）：`python product-manager/scripts/check_prd.py 01-prd.md`。退出码非 0 不准交：缺节补节，有占位残留替换成真实内容。
+**交稿前必跑**（整套部署在工作区根目录）：`python product-manager/scripts/check_prd.py 01-prd.md`。**退出码必须为 0 才允许交稿，这是硬闸门**：
+- 退 1（缺章节）：按模板补齐后重跑；
+- 退 2（占位残留/待确认未填）：**必须**把占位替换成真实内容后重跑，占位残留不是可带走的警告，未清干净禁止交稿、禁止进下一棒、禁止先给用户过目；
+- 退 3（路径不对）：检查命令与文件位置后重跑。
+任何非 0 退出码都意味着这份 PRD 不能往下流，修复到退 0 为止，没有例外。
 
 ## 独立部署
 

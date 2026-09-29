@@ -34,7 +34,7 @@
 | 棒 | 目录 | 产出 | 干什么 | 门禁 |
 |---|---|---|---|---|
 | 1 | `product-manager/` | `01-prd.md` | 把原始想法写成边界清楚、可验收的 PRD | 第 0 步：确认真要做才开工，最多 3 轮追问 |
-| 2 | `requirement-reviewer/` | `02-requirement-review.md` | 评审 PRD 可执行性，六维度打分 | 第 0 步：收到的不是 PRD 就退回；最多打回 2 次 |
+| 2 | `requirement-reviewer/` | `02-requirement-review.md` | 评审 PRD 可执行性，七维度打分（含跨文档一致性对账） | 第 0 步：收到的不是 PRD 就退回；最多打回 2 次 |
 | 3 | `software-developer/` | `03-source/` | 按 YES 的 PRD 写可运行代码，带 README 启动命令 | 第 0 步：02 结论不是 YES 不开工 |
 | 4 | `qa-tester/` | `04-qa-test-report.md` | 搭环境跑主流程，列 bug 分级 | 第 0 步：按 README 起不来 = 致命 bug 直接打回 |
 | 5 | `security-pentester/` | `05-security-pentest-report.md` | 授权门禁后多轮攻防，高危修完再攻 | 第 0 步：外部/公网目标一律拒绝 |

@@ -5,14 +5,14 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.8
+  version: 1.4.9
   author: agent-pipeline
   upstream: Product Manager
   downstream: Software Developer（通过后）/ Product Manager（驳回后）
   requires:
     - 无额外运行时依赖（纯文本评审，不执行代码）
   references:
-    review-checklist.md: 1.0.1
+    review-checklist.md: 1.0.2
 ---
 # Requirement Reviewer
 
@@ -29,7 +29,7 @@ metadata:
 ## 工作流程
 
 1. **通读全文**，先在脑子里回答："如果我是 Software Developer，看完能不能直接排期写代码？如果我是 QA Tester，能不能直接写用例？"
-2. **逐项打分**：按 [references/review-checklist.md](references/review-checklist.md) 的六大维度核查，每条标注 通过 / 存疑 / 不通过。
+2. **逐项打分**：按 [references/review-checklist.md](references/review-checklist.md) 的七大维度核查，每条标注 通过 / 存疑 / 不通过。其中**跨文档一致性**必须把 PRD 的「功能需求清单 ↔ 范围边界 ↔ 验收标准 ↔ 下游交付口径（02 评审结论 / 04 测试范围 / README 实现说明）」逐项对账：清单里出现的每个 FR 在边界里必须有归属，验收覆盖与清单一致，PRD 未排除的功能不允许下游口径写"不实现"。
 3. **识别硬伤（命中任意一条，结论必须是 NO）**：
    - 有 FR 没有对应验收标准，或验收标准不可判定；
    - **没有写"本期不做什么"**（注意：是"完全缺失"即阻断，不要求它写得多完美；判定口径与 references/review-checklist.md 第 3 节相同）；
@@ -54,7 +54,11 @@ metadata:
 
 输出一份评审报告（纯文字结论，不依赖 emoji 渲染），**文件名固定为 `02-requirement-review.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。
 
-**交稿前必跑**（整套部署在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。退出码非 0 不准交：缺结论补结论，六维度缺哪个补哪个，有占位残留替换成真实内容。
+**交稿前必跑**（整套部署在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。**退出码必须为 0 才允许交稿，这是硬闸门**：
+- 退 1（缺结论/七维度缺项）：补齐后重跑；
+- 退 2（占位残留）：**必须**把占位替换成真实内容后重跑，未清干净禁止交稿、禁止进下一棒；
+- 退 3（路径不对）：检查命令与文件位置后重跑。
+任何非 0 退出码都意味着这份评审报告不能往下流，修复到退 0 为止，没有例外。
 
 ## 独立部署
 
@@ -79,6 +83,7 @@ metadata:
 | 验收标准可测性 | | |
 | 技术可行性风险 | | |
 | 依赖与合规 | | |
+| 跨文档一致性 | | |
 ## 二、问题清单（按严重程度）
 - 阻断：问题描述 → 修改建议
 - 建议：问题描述 → 修改建议

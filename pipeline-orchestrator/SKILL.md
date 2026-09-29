@@ -3,7 +3,7 @@ name: pipeline-orchestrator
 description: 软件开发流水线总调度。当用户说"走五棒流水线/从需求做到上线/做个完整项目/全套开发流程"时使用，按顺序串联 product-manager -> requirement-reviewer -> software-developer -> qa-tester -> security-pentester，每棒检查产物和校验脚本，打回自动路由，最后打包五件套交付。不要用于：只写需求、只测功能、只做安全测试等单棒任务（直接调对应棒即可）。
 metadata:
   platform: cross-platform
-  version: 1.0.4
+  version: 1.0.5
   references: 无（总调度角色，无独立知识库文件）
 ---
 
@@ -13,10 +13,11 @@ metadata:
 
 ## 第 0 步：开工门禁（不可跳过）
 
-开工前先确认两件事：
+开工前先确认三件事：
 
 1. 用户明确说要走完整条流水线（"走五棒/做个完整项目/从需求做到上线"）。如果只说"帮我写个 PRD"或"测一下这个程序"，不要启动 orchestrator，直接调对应单棒。
 2. 确认工作目录：用户说项目放哪就放哪；没说就问一句"项目放哪个目录"。这个目录就是后面所有命令的 CWD。
+3. 确认你对**每棒交稿的硬性标准**：本棒校验脚本的退出码必须为 **0** 才允许交稿/进下一棒；非 0（包括退 2 的警告级问题，如占位残留、依赖目录混入、未修复致命项）一律回本棒修复重跑至 0，**不许带警告交稿、不许先给用户过目再放行**。
 
 门禁没过不启动流水线，不产出任何文件。
 
@@ -50,14 +51,14 @@ metadata:
 
 1. 读 `product-manager/SKILL.md`，按它的流程追问用户、写 PRD。
 2. 产物写 `01-prd.md`。
-3. 跑 `python product-manager/scripts/check_prd.py 01-prd.md`，退出码非 0 就补，补到 0。
-4. 把 PRD 摘要给用户看，等用户说"继续"再进第 2 棒。
+3. 跑 `python product-manager/scripts/check_prd.py 01-prd.md`——**退出码必须为 0**。退 1 补节、退 2 把占位替换成真实内容、退 3 查路径，修复后重跑，直到退 0 才允许交稿。
+4. **确认退 0 后**，把 PRD 摘要给用户看，等用户说"继续"再进第 2 棒。禁止带着 WARN（退 2）把 PRD 交出去。
 
 ### 第 2 棒：Requirement Reviewer
 
-1. 读 `requirement-reviewer/SKILL.md`，评审 01-prd.md。
+1. 读 `requirement-reviewer/SKILL.md`，评审 01-prd.md（七大维度，含跨文档一致性对账）。
 2. 产物写 `02-requirement-review.md`。
-3. 跑 `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。
+3. 跑 `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`——**退出码必须为 0** 才允许作为评审结论流转。
 4. 看结论：
    - **YES**：进第 3 棒。
    - **NO / 退回**：把打回清单给用户，退回第 1 棒改 PRD。改完重审，最多 2 次打回（共 3 次评审机会）。到上限问用户：放行 / 推倒重写 / 用户补信息。
@@ -65,15 +66,15 @@ metadata:
 ### 第 3 棒：Software Developer
 
 1. 读 `software-developer/SKILL.md`，按 YES 的 PRD 写代码。
-2. 产物写 `03-source/`（含 README.md 启动命令）。
-3. 跑 `python software-developer/scripts/check_source.py 03-source/`，退出码非 0 就补。
+2. 产物写 `03-source/`（含 README.md 启动命令与非功能需求落实说明）。
+3. 跑 `python software-developer/scripts/check_source.py 03-source/`——**退出码必须为 0**。退 1 补 README/启动命令/非功能落实、退 2 从交付包删掉依赖目录、退 3 查路径，修复后重跑，直到退 0 才允许交包。
 4. 进第 4 棒。
 
 ### 第 4 棒：QA Tester
 
 1. 读 `qa-tester/SKILL.md`，按 README 启动程序跑主流程。
-2. 产物写 `04-qa-test-report.md`。
-3. 跑 `python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。
+2. 产物写 `04-qa-test-report.md`（含非功能与风险预案核对节）。
+3. 跑 `python qa-tester/scripts/check_qa.py 04-qa-test-report.md`——**退出码必须为 0** 才允许作为测试结论流转。
 4. 看结论：
    - **通过**：进第 5 棒。
    - **打回 / 有致命 bug**：退回第 3 棒修，修完重测。
@@ -101,7 +102,7 @@ metadata:
 ## 铁律
 
 - **不跳棒**：02 不是 YES 不许写代码；04 没过不许做安全测试。
-- **每棒交稿前必跑对应校验脚本**，退出码非 0 不准进下一棒。
+- **每棒交稿前必跑对应校验脚本，退出码必须为 0**：退 1/2/3 一律回本棒修复重跑至 0，**带警告（退 2）也算不过关**，不许交稿、不许进下一棒、不许先给用户过目。校验脚本退出码是每棒能否流转的唯一机器判据。
 - **打回靠文件不靠嘴**：NO/退回/打回都写进对应 0X 文件，作为下一棒输入。
 - **history/ 自动留档**：覆盖写前把上一版归档，r 取最大序号+1。
 - **环境隔离**：QA 和 SP 跑在独立实例上，不互相污染。

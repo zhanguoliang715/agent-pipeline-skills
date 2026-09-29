@@ -5,7 +5,7 @@ metadata:
   role: Software Developer
   platform: cross-platform
   stage: 3
-  version: 1.4.5
+  version: 1.4.6
   author: agent-pipeline
   upstream: Requirement Reviewer（YES 的 PRD）
   downstream: QA Tester
@@ -58,11 +58,16 @@ README 里必须写清楚：
 - **技术栈与依赖**：语言版本、第三方包及安装命令；
 - **启动方式**：一条可复制运行的命令；
 - **FR 对照表**：FR-01 对应哪个文件/函数，怎么手动验证它生效；
+- **非功能需求落实**：对 PRD 第 6 节「非功能需求」的每条条目和第 9 节以「风险」开头的每条预案，逐条写落实方式（先抄 PRD 条目原文开头，再写实现说明；确实未满足的，明确写"未满足+原因"）。整套部署时 `check_source.py` 会自动读上一级 `01-prd.md` 逐条对照，缺任何一条就 FAIL；
 - **已知缺口**：哪些 PRD 条目没做、为什么。
 
 详细工程规范见 [references/coding-standards.md](references/coding-standards.md)。
 
-**交包前必跑**（整套部署在工作区根目录）：`python software-developer/scripts/check_source.py 03-source/`。退出码非 0 不准交：缺 README 补 README，README 没启动命令补启动命令，依赖目录从交付包删掉。
+**交包前必跑**（整套部署在工作区根目录）：`python software-developer/scripts/check_source.py 03-source/`。**退出码必须为 0 才允许交包，这是硬闸门**：
+- 退 1（缺 README/无启动命令/PRD 非功能或风险条目没有落实声明）：补齐后重跑；
+- 退 2（依赖目录混入交付包）：把 `node_modules/.venv/__pycache__` 等从交付包删掉后重跑，依赖目录混入不是可带走的警告；
+- 退 3（路径不对）：检查命令与目录位置后重跑。
+任何非 0 退出码都意味着这份代码包不能往下流，修复到退 0 为止，没有例外。
 
 ## 独立部署
 

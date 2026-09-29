@@ -90,6 +90,8 @@ REVIEW_OK = """# 评审报告
 可行。
 ## 合规
 合规。
+## 一致性
+一致。
 """
 
 QA_OK = """# 测试报告
@@ -99,6 +101,9 @@ QA_OK = """# 测试报告
 ## bug 清单
 - 所有用例通过，无遗留问题
 - 回归通过
+
+## 非功能与风险预案核对
+- 性能、安全、风险预案全部核对通过
 """
 
 QA_FATAL = """# 测试报告
@@ -107,6 +112,9 @@ QA_FATAL = """# 测试报告
 
 ## bug 清单
 - 致命：程序无法启动
+
+## 非功能与风险预案核对
+- 性能、安全、风险预案全部核对通过
 """
 
 
@@ -219,11 +227,20 @@ def _(tmp):
     return run(CHECK_REVIEW, str(tmp / "nope.md")) == 3
 
 
+@test("check_review 缺一致性维度=1")
+def _(tmp):
+    # 七大维度之一缺失必须 FAIL（跨文档一致性是刺 2 新增维度）
+    f = w("review_nodim.md", tmp / "review_nodim.md",
+          REVIEW_OK.replace("## 一致性\n一致。\n", ""))
+    return run(CHECK_REVIEW, f) == 1
+
+
 @test("check_review 占位残留=2")
 def _(tmp):
     f = w("review_ph.md", tmp / "review_ph.md",
           "# 评审报告\n结论：YES\n## 完整性\n[待确认]\n## 可执行性\n可执行。\n"
-          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 一致性\n一致。\n")
     return run(CHECK_REVIEW, f) == 2
 
 
@@ -231,7 +248,8 @@ def _(tmp):
 def _(tmp):
     f = w("review_ph_full.md", tmp / "review_ph_full.md",
           "# 评审报告\n结论：YES\n## 完整性\n【待确认】\n## 可执行性\n可执行。\n"
-          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 一致性\n一致。\n")
     return run(CHECK_REVIEW, f) == 2
 
 
@@ -241,6 +259,7 @@ def _(tmp):
     f = w("review_newway.md", tmp / "review_newway.md",
           "# 评审报告\n结论：NO\n## 完整性\n完整。\n## 可执行性\n可执行。\n"
           "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 一致性\n一致。\n"
           "## 问题清单\n- 阻断：缺少验收标准 → 补充\n- 建议：文案待定 → 后续优化\n")
     return run(CHECK_REVIEW, f) == 0
 
@@ -251,6 +270,7 @@ def _(tmp):
     f = w("review_oldway.md", tmp / "review_oldway.md",
           "# 评审报告\n结论：NO\n## 完整性\n完整。\n## 可执行性\n可执行。\n"
           "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n"
+          "## 一致性\n一致。\n"
           "## 问题清单\n- [阻断] 缺少验收标准 → 补充\n")
     return run(CHECK_REVIEW, f) == 2
 
@@ -292,6 +312,29 @@ def _(tmp):
     return run(CHECK_SOURCE, str(d)) == 2
 
 
+@test("check_source 带PRD非功能未落实=1")
+def _(tmp):
+    # 刺 5：PRD 写了非功能需求/风险预案，交付包 README 无落实声明 → FAIL
+    w("01-prd.md", tmp / "01-prd.md", PRD_TEN)
+    d = tmp / "src_nfr_bad"
+    d.mkdir()
+    w("README.md", d / "README.md", "# 项目\n运行：python main.py\n")
+    return run(CHECK_SOURCE, str(d)) == 1
+
+
+@test("check_source 带PRD非功能已落实=0")
+def _(tmp):
+    # 落实声明逐条抄 PRD 条目原文开头 + 实现说明 → 通过
+    w("01-prd.md", tmp / "01-prd.md", PRD_TEN)
+    d = tmp / "src_nfr_ok"
+    d.mkdir()
+    w("README.md", d / "README.md",
+      "# 项目\n运行：python main.py\n\n## 非功能需求落实\n"
+      "- 性能：列表加载 < 2s（实测 1.5s）\n"
+      "- 安全：密码不得明文存储（存环境变量，日志不打印）\n")
+    return run(CHECK_SOURCE, str(d)) == 0
+
+
 @test("check_source 目录不存在=3")
 def _(tmp):
     return run(CHECK_SOURCE, str(tmp / "nope")) == 3
@@ -300,6 +343,14 @@ def _(tmp):
 @test("check_source 缺参=2")
 def _(tmp):
     return run(CHECK_SOURCE) == 2
+
+
+@test("check_qa 缺非功能核对=1")
+def _(tmp):
+    # 刺 4：报告缺「非功能与风险预案核对」段落必须 FAIL
+    f = w("qa_nonfr.md", tmp / "qa_nonfr.md",
+          QA_OK.replace("## 非功能与风险预案核对\n- 性能、安全、风险预案全部核对通过\n", ""))
+    return run(CHECK_QA, f) == 1
 
 
 @test("check_qa 通过=0")

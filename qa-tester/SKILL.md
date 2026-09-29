@@ -5,14 +5,14 @@ metadata:
   role: QA Tester
   platform: cross-platform
   stage: 4
-  version: 1.4.5
+  version: 1.4.6
   author: agent-pipeline
   upstream: Software Developer
   downstream: Security Pentester（通过后）/ Software Developer（打回后）
   requires:
     - 可在本机按 README 运行被测程序（同 Software Developer 环节的运行时）
   references:
-    test-case-design.md: 1.0.1
+    test-case-design.md: 1.0.2
     bug-levels.md: 1.0.1
 ---
 # QA Tester
@@ -31,6 +31,7 @@ metadata:
 
 1. **搭环境跑起来**：严格照 README 装依赖、启动。第一步就失败，直接开致命 bug。
 2. **读 PRD 列用例**：方法见 [references/test-case-design.md](references/test-case-design.md)。为每条 P0 的 FR 至少设计正常流、边界值、异常输入三类用例。
+3. **核对非功能与风险预案**：把 PRD 第 6 节「非功能需求」和第 9 节「依赖、约束与风险」里每一条可验证项转成验证用例并执行（性能实测、安全要求查存储/日志形态、风险预案查是否按预案落地——如"基于单调时钟避免系统时间跳变"就要确认实现真用了单调时钟；没落地记 bug，严重程度按影响定）。每条至少一条用例，结果写入报告第五节。
 3. **执行用例**：逐条操作，记录实际结果 vs 预期结果。
 4. **记 bug**：每个问题写清楚——标题、复现步骤、预期、实际、严重程度、环境。
 5. **回归**：bug 被修复后，除了复验该 bug，还要重跑相关旧用例，防止改 A 坏 B。
@@ -72,13 +73,22 @@ metadata:
 | 编号 | 严重程度 | 标题 | 复现步骤 | 预期 vs 实际 |
 |---|---|---|---|---|
 | BUG-01 | 致命/严重/一般/建议 | | | |
-## 四、遗留风险
+## 四、非功能与风险预案核对
+| PRD 条目（第 6 节非功能 / 第 9 节风险） | 验证方式 | 结果 |
+|---|---|---|
+| 如：性能：列表加载 < 2s | 实际计时 | 通过 |
+| 如：风险：基于单调时钟计算避免系统时间跳变 | 检查实现是否用单调时钟 | 通过/记 bug |
+## 五、遗留风险
 - 通过但已知的小问题，提请安全测试环节注意
 ```
 
 bug 分级定义见 [references/bug-levels.md](references/bug-levels.md)，用例设计方法见 [references/test-case-design.md](references/test-case-design.md)。
 
-**交报告前必跑**（整套部署在工作区根目录）：`python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。退出码非 0 不准交：缺结论补结论，有未修复致命项要么修要么明确写"残留风险"。
+**交报告前必跑**（整套部署在工作区根目录）：`python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。**退出码必须为 0 才允许交报告，这是硬闸门**：
+- 退 1（缺结论/缺 bug 清单/**缺「非功能与风险预案核对」段落**）：补齐后重跑；
+- 退 2（有未修复致命/严重项）：要么把致命/严重项修到"已修复并回归"，要么在报告里明确写"残留风险"并由用户确认，不能带未修复致命项交稿；
+- 退 3（路径不对）：检查命令与文件位置后重跑。
+任何非 0 退出码都意味着这份测试报告不能往下流，修复到退 0 为止，没有例外。
 
 ## 独立部署
 

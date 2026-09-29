@@ -3,7 +3,7 @@
 """功能测试报告检查（QA Tester 输出前门禁）。
 
 用法：python scripts/check_qa.py 04-qa-test-report.md
-退出码：0=通过 1=缺结论或 bug 分级表 2=仍有未修复致命/严重 bug
+退出码：0=通过 1=缺结论/bug 分级表/非功能与风险预案核对 2=仍有未修复致命/严重 bug
 """
 import re
 import sys
@@ -27,6 +27,8 @@ def main():
         problems.append("缺测试结论（通过/打回/不通过）")
     if not re.search(r"bug|缺陷|问题", text, re.I):
         problems.append("没有 bug/缺陷清单段落")
+    if not re.search(r"非功能|风险预案", text) or "核对" not in text:
+        problems.append("缺「非功能与风险预案核对」段落（应逐条列出 PRD 非功能需求/风险预案的验证方式与结果）")
 
     print(f"测试报告检查: {p}")
     for pr in problems:
@@ -44,7 +46,7 @@ def main():
         sys.exit(1)
     if unresolved:
         sys.exit(2)
-    print("  通过: 结论明确、有 bug 清单、无未修复致命项")
+    print("  通过: 结论明确、有 bug 清单、无未修复致命项、非功能与风险预案已核对")
     sys.exit(0)
 
 

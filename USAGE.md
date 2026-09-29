@@ -81,9 +81,9 @@ repo-root/
 | 棒 | 命令 | 查什么 |
 |---|---|---|
 | PM | `python product-manager/scripts/check_prd.py 01-prd.md` | PRD 十节齐全、无占位残留 |
-| RR | `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md` | 有 YES/NO/退回结论、六维度全覆盖、无占位残留 |
-| SD | `python software-developer/scripts/check_source.py 03-source/` | README 存在且有启动命令、无依赖目录混入 |
-| QA | `python qa-tester/scripts/check_qa.py 04-qa-test-report.md` | 有结论、有 bug 清单、无未修复致命项 |
+| RR | `python requirement-reviewer/scripts/check_review.py 02-requirement-review.md` | 有 YES/NO/退回结论、七维度全覆盖（含跨文档一致性）、无占位残留 |
+| SD | `python software-developer/scripts/check_source.py 03-source/` | README 存在且有启动命令、无依赖目录混入、PRD 非功能需求/风险预案有落实声明 |
+| QA | `python qa-tester/scripts/check_qa.py 04-qa-test-report.md` | 有结论、有 bug 清单、无未修复致命项、含非功能与风险预案核对段落 |
 | SP | `python security-pentester/scripts/scan_security.py 03-source/` | 危险代码扫描（正则粗扫 + bandit Python 深度扫） |
 
 退出码分两套，别混：
@@ -93,7 +93,7 @@ repo-root/
 | 码 | 含义 |
 |---|---|
 | 0 | 通过 |
-| 1 | 缺内容（缺章节/缺结论/缺 README 等） |
+| 1 | 缺内容（缺章节/缺结论/缺 README/缺非功能落实声明/缺风险预案核对段落等） |
 | 2 | 业务警告，各脚本语义不同：check_prd/check_review=占位残留，check_source=依赖目录混入，check_qa=未修致命/严重项 |
 | 3 | 路径不存在（文件或目录） |
 
