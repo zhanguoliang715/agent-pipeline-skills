@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.4
+  version: 1.4.5
   author: agent-pipeline
   upstream: Product Manager
   downstream: Software Developer（通过后）/ Product Manager（驳回后）

@@ -11,7 +11,7 @@ from pathlib import Path
 
 DIMENSIONS = ["完整性", "可执行性", "边界", "验收", "技术可行", "合规"]
 CONCLUSIONS = ["YES", "NO", "退回"]
-PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]")
+PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]|【[^】]{2,}】")
 
 
 def main():

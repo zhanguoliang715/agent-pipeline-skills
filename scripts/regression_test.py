@@ -34,7 +34,7 @@ SCAN_SECURITY = ROOT / "security-pentester" / "scripts" / "scan_security.py"
 PRD_TEN = """# 示例 PRD
 
 ## 1. 背景与目标
-- 一句话概括：我们要为【新用户】在【首次登录】下解决【流失】问题，成功后【留存提升】。
+- 一句话概括：我们要为新用户在首次登录场景下解决流失问题，成功后提升留存。
 
 ## 2. 目标用户与场景
 - 目标用户：新用户
@@ -154,6 +154,12 @@ def _(tmp):
     return run(CHECK_PRD, f) == 2
 
 
+@test("check_prd 全角占位=2")
+def _(tmp):
+    f = w("prd_ph_full.md", tmp / "prd_ph_full.md", PRD_TEN.replace("新用户", "【待确认】"))
+    return run(CHECK_PRD, f) == 2
+
+
 @test("check_prd 文件不存在=3")
 def _(tmp):
     return run(CHECK_PRD, str(tmp / "nope.md")) == 3
@@ -185,6 +191,14 @@ def _(tmp):
 def _(tmp):
     f = w("review_ph.md", tmp / "review_ph.md",
           "# 评审报告\n结论：YES\n## 完整性\n[待确认]\n## 可执行性\n可执行。\n"
+          "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
+    return run(CHECK_REVIEW, f) == 2
+
+
+@test("check_review 全角占位=2")
+def _(tmp):
+    f = w("review_ph_full.md", tmp / "review_ph_full.md",
+          "# 评审报告\n结论：YES\n## 完整性\n【待确认】\n## 可执行性\n可执行。\n"
           "## 边界\n清晰。\n## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n")
     return run(CHECK_REVIEW, f) == 2
 
