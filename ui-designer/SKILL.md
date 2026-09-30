@@ -5,7 +5,7 @@ metadata:
   role: UI Designer（设计师）
   platform: cross-platform
   stage: 4
-  version: 1.0.0
+  version: 1.0.1
   author: agent-pipeline
   upstream: Prototype Designer
   downstream: Software Developer
@@ -33,7 +33,7 @@ metadata:
    - 主色 / 辅色 / 强调色（给出色值，说明语义：主按钮、链接、错误、成功）；
    - 字体层级（标题/正文/辅助文字的字号与字重）；
    - 间距与圆角规范（间距刻度、圆角大小）；
-   - 组件规范（按钮、输入框、列表、弹窗、提示条的状态与尺寸）。
+   - 组件规范（按钮、输入框、列表、弹窗、提示条的状态与尺寸）。视觉规范与自审清单见 [references/ui-guidelines.md](references/ui-guidelines.md)，交稿前逐条对照。
 3. **逐页出高保真图**：每页输出设计图（页面名 + 对应 FR + 设计图文件），图里要体现真实内容密度（用与原型一致的文案/数据示例，不画空壳）。
 4. **写设计规范文档**：把设计系统、组件状态、页面清单整理成开发可查的说明。
 5. **工具**：用户环境有 Figma 时可在其中产出并导出；否则调用绘图/生图工具产出设计图（PNG/JPG/SVG），并把文件放入 `04-ui-design/`。

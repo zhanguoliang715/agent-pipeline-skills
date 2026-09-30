@@ -5,7 +5,7 @@ metadata:
   role: QA Tester
   platform: cross-platform
   stage: 8
-  version: 1.4.7
+  version: 1.4.8
   author: agent-pipeline
   upstream: Software Developer
   downstream: Security Pentester（通过后）/ Software Developer（打回后）
@@ -25,7 +25,7 @@ metadata:
 
 1. 代码包目录必须是 `07-source/`，含 README 与源代码；同时要有 `01-prd.md`（验收标准）。
 2. 严格照 README 装依赖并启动。**第一步就起不来，本身就是一个致命 bug，不是"不写报告"**：要写 `08-qa-test-report.md`，结论=打回，Bug 清单里记 BUG-01（致命：按 README 无法启动，附报错和尝试命令），直接打回 Software Developer，不用再设计功能用例。
-3. 与 PM/SP 那种"纯意图/授权确认、没接触产物就拒绝"不同，QA 是真的把包跑了一遍，起不来是测试结论，必须留 `04` 这份文件（两类退回的区分见 Security Pentester 命名规范）。
+3. 与 PM/SP 那种"纯意图/授权确认、没接触产物就拒绝"不同，QA 是真的把包跑了一遍，起不来是测试结论，必须留 `08` 这份文件（两类退回的区分见 Security Pentester 命名规范）。
 
 ## 工作流程
 

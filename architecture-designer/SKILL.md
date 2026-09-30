@@ -5,7 +5,7 @@ metadata:
   role: Architecture Designer（项目技术经理）
   platform: cross-platform
   stage: 6
-  version: 1.0.0
+  version: 1.0.1
   author: agent-pipeline
   upstream: Database Designer
   downstream: Software Developer
@@ -23,7 +23,7 @@ metadata:
 在设计架构之前，先确认你拿到的是**已放行的需求与数据库设计**：
 
 1. 必须有评审报告 `02-requirement-review.md`，结论为 **YES**；PRD 为 `01-prd.md`，含 FR 编号清单。
-2. 数据库设计 `05-database-design.md` 应已存在（架构里的持久化层要照着它分）。若缺失，可以先用 PRD 推演架构、并在文档里注明"持久化层待数据库设计定稿后对齐"，但**不能在没有 FR 清单的情况下开工**。
+2. 必须有数据库设计文档 `05-database-design.md`（架构里的持久化层要照着它分）。缺失时**一律停下，不边猜边设计，也不产出 `06-architecture-design.md`**，等数据库设计定稿（05 补上）再开工。
 3. 门禁没过，不进入下面的设计流程。
 
 ## 工作流程
@@ -33,7 +33,7 @@ metadata:
 3. **定模块划分**：按业务领域或功能域拆模块，每个模块的边界、对外接口、内部组成写清楚；模块之间只通过接口通信。
 4. **定技术选型**：按 PRD 非功能需求选（性能、并发、部署形态），选型理由一句话写清楚；不追求"最流行"，追求"够用且好扩展"。
 5. **画扩展点**：明确未来加功能的位置（新增模块挂哪、扩展接口定义在哪、数据模型怎么演进），这是"便于以后扩展"的直接体现。
-6. **写清约束**：哪些约定是硬性的（目录结构、命名、分层依赖规则），开发必须遵守。
+6. **写清约束**：哪些约定是硬性的（目录结构、命名、分层依赖规则），开发必须遵守。设计要点与自审清单见 [references/architecture-checklist.md](references/architecture-checklist.md)，交稿前逐条对照。
 
 ## 输出契约
 

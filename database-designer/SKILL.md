@@ -5,7 +5,7 @@ metadata:
   role: Database Designer（项目技术经理）
   platform: cross-platform
   stage: 5
-  version: 1.0.0
+  version: 1.0.1
   author: agent-pipeline
   upstream: Requirement Reviewer（YES 的 PRD）
   downstream: Software Developer（后端开发）
@@ -33,7 +33,7 @@ metadata:
 3. **定字段**：每张表列出字段名、类型、是否主键/外键、是否可空、默认值、说明。主键统一规则（自增 id 或业务主键，写明理由）。
 4. **定关联关系**：表之间的外键、一对多/多对多（多对多用关联表）、级联策略（删除时怎么处理关联数据）。
 5. **定索引与约束**：查询频繁的字段建索引；唯一约束、检查约束按业务规则加。
-6. **写清设计说明**：每个表一句话用途；每个关键字段一句话业务含义，避免后端猜。
+6. **写清设计说明**：每个表一句话用途；每个关键字段一句话业务含义，避免后端猜。设计要点与自审清单见 [references/db-design-checklist.md](references/db-design-checklist.md)，交稿前逐条对照。
 
 ## 输出契约
 

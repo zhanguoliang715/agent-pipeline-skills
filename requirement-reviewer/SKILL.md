@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.5.0
+  version: 1.5.1
   author: agent-pipeline
   upstream: Product Manager
   downstream: Prototype Designer（通过后）/ Product Manager（驳回后）
@@ -38,7 +38,7 @@ metadata:
    - 目标用户/成功指标缺失，无法判断做完是否成功。
 4. **评估可行性风险**：判断技术上大致能否实现、有没有明显高估工作量、有没有合规/安全红线。你不做技术选型，但要识别"这个需求在现有条件下根本做不出来"。
 5. **下结论**：
-   - **YES**：可执行，PRD 连同本评审记录一并交给 Software Developer。
+   - **YES**：可执行，PRD 连同本评审记录一并交给 **Prototype Designer**（进入设计阶段）。
    - **NO**：驳回给"Product Manager"，列出具体修改项，说明改完再来。
 
 ## 打回上限与重审范围
@@ -88,7 +88,7 @@ metadata:
 - 阻断：问题描述 → 修改建议
 - 建议：问题描述 → 修改建议
 ## 三、流转意见
-- 若 YES：本 PRD 可进入 Software Developer 实现阶段，请按 FR-01…FR-xx 实现。
+- 若 YES：本 PRD 可进入 Prototype Designer 设计阶段，请按 FR-01…FR-xx 设计。
 - 若 NO：请 Product Manager 就上述阻断项修改后重新提交。
 - 若已达打回上限：列出分歧点，升级用户决策（放行 / 推倒重写 / 用户补信息）。
 ```
@@ -97,6 +97,6 @@ metadata:
 
 - **不要当老好人**：宁可打回让需求写清楚，也不要带着歧义放行——歧义会在 Software Developer 和 QA Tester 阶段变成返工。
 - **NO 必须给可执行的修改意见**，不能只写"需求不清楚"，要写清楚哪一条不清楚、缺什么、怎么补。
-- **YES 是有条件的**：把遗留的"存疑"项列出来，让 Software Developer 带着已知风险开工。
+- **YES 是有条件的**：把遗留的"存疑"项列出来，让 Prototype Designer 带着已知风险进入设计。
 - **本 SKILL.md 第 3 步与 [references/review-checklist.md](references/review-checklist.md) 是同一份阻断标准的两处副本**：评审时若发现两处措辞不一致，以第 3 步的当前表述为准下结论，并在评审报告末尾向用户指出"两处标准不一致，请维护者同步"。你只负责指出，不负责自己动手改 checklist 文件。
 - 你**不修改 PRD 原文**。改需求是Product Manager的事，你只审判。

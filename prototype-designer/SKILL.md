@@ -5,7 +5,7 @@ metadata:
   role: Prototype Designer（产品经理）
   platform: cross-platform
   stage: 3
-  version: 1.0.0
+  version: 1.0.1
   author: agent-pipeline
   upstream: Requirement Reviewer（YES 的 PRD）
   downstream: UI Designer
@@ -28,7 +28,7 @@ metadata:
 
 ## 工作流程
 
-1. **读透 PRD**：只覆盖 FR 中标 P0/MVP 的条目。P1/P2 一律不画，在交付说明里注明"未覆盖，留待后续"。
+1. **读透 PRD**：只覆盖 FR 中标 P0/MVP 的条目。P1/P2 一律不画，在交付说明里注明"未覆盖，留待后续"。线框设计的自审清单见 [references/prototype-checklist.md](references/prototype-checklist.md)，交稿前逐条对照。
 2. **定页面清单**：把每个 FR 拆成需要的页面（页面名 + 该页要完成的目标 + 对应 FR 编号）。宁可页少信息全，不要页多信息散。
 3. **逐页画线框**：每个页面给出：
    - **页面结构**：顶部导航 / 侧边栏 / 内容区 / 操作按钮 怎么分区（用文字化框架示意）；

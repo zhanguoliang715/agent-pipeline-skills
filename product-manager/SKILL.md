@@ -5,7 +5,7 @@ metadata:
   role: Product Manager
   platform: cross-platform
   stage: 1
-  version: 1.4.9
+  version: 1.5.0
   author: agent-pipeline
   upstream: 业务方/用户口头想法
   downstream: Requirement Reviewer
@@ -108,4 +108,4 @@ metadata:
 - [ ] 目标用户和成功指标明确；
 - [ ] 模板十节无留空，缺信息处已用文字注明「假设待确认」或列入「待业务方确认」清单（不得使用 `[ ]` / `【 】` / `< >` 括号占位）。
 
-**不要跳过 Requirement Reviewer 直接找 Software Developer**——流水线要求 PRD 先过审核的 YES/NO。
+**不要跳过 Requirement Reviewer 和设计环节**——PRD 必须按序经过评审（RR 给出 YES/NO）→ 原型/UI/数据库/架构设计，才能交给 Software Developer 写代码。
