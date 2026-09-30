@@ -4,8 +4,8 @@ description: QA Tester — 软件开发流水线第四环。当用户提供一�
 metadata:
   role: QA Tester
   platform: cross-platform
-  stage: 4
-  version: 1.4.6
+  stage: 8
+  version: 1.4.7
   author: agent-pipeline
   upstream: Software Developer
   downstream: Security Pentester（通过后）/ Software Developer（打回后）
@@ -23,8 +23,8 @@ metadata:
 
 在设计任何测试用例之前，先确认被测对象真的存在、真的能跑：
 
-1. 代码包目录必须是 `03-source/`，含 README 与源代码；同时要有 `01-prd.md`（验收标准）。
-2. 严格照 README 装依赖并启动。**第一步就起不来，本身就是一个致命 bug，不是"不写报告"**：要写 `04-qa-test-report.md`，结论=打回，Bug 清单里记 BUG-01（致命：按 README 无法启动，附报错和尝试命令），直接打回 Software Developer，不用再设计功能用例。
+1. 代码包目录必须是 `07-source/`，含 README 与源代码；同时要有 `01-prd.md`（验收标准）。
+2. 严格照 README 装依赖并启动。**第一步就起不来，本身就是一个致命 bug，不是"不写报告"**：要写 `08-qa-test-report.md`，结论=打回，Bug 清单里记 BUG-01（致命：按 README 无法启动，附报错和尝试命令），直接打回 Software Developer，不用再设计功能用例。
 3. 与 PM/SP 那种"纯意图/授权确认、没接触产物就拒绝"不同，QA 是真的把包跑了一遍，起不来是测试结论，必须留 `04` 这份文件（两类退回的区分见 Security Pentester 命名规范）。
 
 ## 工作流程
@@ -56,7 +56,7 @@ metadata:
 
 ## 输出契约
 
-测试报告**文件名固定为 `04-qa-test-report.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。功能测试与安全测试必须在各自独立的干净环境上跑（环境隔离细则见 Security Pentester 环节），本报告记录的是干净环境下的结果。
+测试报告**文件名固定为 `08-qa-test-report.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。功能测试与安全测试必须在各自独立的干净环境上跑（环境隔离细则见 Security Pentester 环节），本报告记录的是干净环境下的结果。
 
 输出测试报告（纯文字结论，不依赖 emoji 渲染）：
 
@@ -84,7 +84,7 @@ metadata:
 
 bug 分级定义见 [references/bug-levels.md](references/bug-levels.md)，用例设计方法见 [references/test-case-design.md](references/test-case-design.md)。
 
-**交报告前必跑**（整套部署在工作区根目录）：`python qa-tester/scripts/check_qa.py 04-qa-test-report.md`。**退出码必须为 0 才允许交报告，这是硬闸门**：
+**交报告前必跑**（整套部署在工作区根目录）：`python qa-tester/scripts/check_qa.py 08-qa-test-report.md`。**退出码必须为 0 才允许交报告，这是硬闸门**：
 - 退 1（缺结论/缺 bug 清单/**缺「非功能与风险预案核对」段落**）：补齐后重跑；
 - 退 2（有未修复致命/严重项）：要么把致命/严重项修到"已修复并回归"，要么在报告里明确写"残留风险"并由用户确认，不能带未修复致命项交稿；
 - 退 3（路径不对）：检查命令与文件位置后重跑。
@@ -95,10 +95,10 @@ bug 分级定义见 [references/bug-levels.md](references/bug-levels.md)，用�
 本棒可单独拷出使用，不依赖仓库其他文件：
 
 - 拷走 `qa-tester/` 整个目录（含 `SKILL.md`、`references/`、`scripts/`）即可独立运行。
-- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_qa.py 04-qa-test-report.md`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
+- 独立部署时以本棒目录为 CWD 执行 `python scripts/check_qa.py 08-qa-test-report.md`；整套部署时仍用上文仓库根写法。脚本按传入路径解析产物，两种写法都合法。
 - 运行时依赖：Python 3.9+；运行被测程序按 README 声明的运行时。
 - `references/` 随棒携带，顶部"配套 SKILL"指本棒自身，不悬空。
-- 产物文件名固定为 `04-qa-test-report.md`，不依赖其他棒目录。
+- 产物文件名固定为 `08-qa-test-report.md`，不依赖其他棒目录。
 
 ## 测试纪律
 

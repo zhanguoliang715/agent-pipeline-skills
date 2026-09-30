@@ -8,7 +8,7 @@
   2. metadata.references 声明的每个文件真实存在、本文件版本与声明一致、含修订历史
   3. SKILL.md 正文里 markdown 链接到的 references 不悬空
   4. 各棒 version 不一致只警告（独立发版，改谁升谁），不 FAIL
-  5. 各棒输出契约声明了自己的固定产物名（01-05）
+  5. 各棒输出契约声明了自己的固定产物名（01-09）
   6. pipeline-orchestrator 作为总调度，查 SKILL.md/frontmatter/version/第 0 步门禁
 有任何 FAIL 退出码为 1。
 """
@@ -20,6 +20,10 @@ ROOT = Path(__file__).resolve().parent
 SKILLS = [
     "product-manager",
     "requirement-reviewer",
+    "prototype-designer",
+    "ui-designer",
+    "database-designer",
+    "architecture-designer",
     "software-developer",
     "qa-tester",
     "security-pentester",
@@ -29,9 +33,13 @@ ALLOWED_FM_KEYS = {"name", "description", "license", "allowed-tools", "metadata"
 NAMING = {
     "product-manager": "01-prd.md",
     "requirement-reviewer": "02-requirement-review.md",
-    "software-developer": "03-source",
-    "qa-tester": "04-qa-test-report.md",
-    "security-pentester": "05-security-pentest-report.md",
+    "prototype-designer": "03-prototype-design.md",
+    "ui-designer": "04-ui-design",
+    "database-designer": "05-database-design.md",
+    "architecture-designer": "06-architecture-design.md",
+    "software-developer": "07-source",
+    "qa-tester": "08-qa-test-report.md",
+    "security-pentester": "09-security-pentest-report.md",
 }
 
 errors = []

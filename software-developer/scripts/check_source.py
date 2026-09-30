@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 """代码包交付检查（Software Developer 输出前门禁）。
 
-用法：python scripts/check_source.py 03-source/
-退出码：0=通过 1=缺 README/启动命令/非功能落实缺失 2=把依赖目录打进了交付包
-      3=目录不存在  缺参=2
+用法：python scripts/check_source.py 07-source/
+退出码：0=通过 1=缺 README/启动命令/非功能落实缺失/API 接口文档缺失或无接口条目
+      2=把依赖目录打进了交付包  3=目录不存在  缺参=2
+
+API 接口文档（07-api-docs.md，前后端对接契约）：
+  脚本自动在 07-source/ 的上一级找 07-api-docs.md，要求存在、含"接口"条目、无占位残留。
+  缺文件/无接口条目/含占位都 FAIL（退出码 1）——系统 API 接口文档是前后端分离模式的必交产物。
 
 非功能落实对照（整套部署时自动生效）：
-  脚本自动在 03-source/ 的上一级找 01-prd.md，找到则把 PRD 第 6 节「非功能需求」
+  脚本自动在 07-source/ 的上一级找 01-prd.md，找到则把 PRD 第 6 节「非功能需求」
   和第 9 节「依赖、约束与风险/依赖」里的条目提取出来，要求 README（或 NFR.md）
   里对每条条目有落实声明（落实说明需先抄 PRD 条目原文开头，再写实现方式）。
   缺一条就 FAIL（退出码 1）——PRD 写了非功能承诺，交付包必须逐条说明怎么落实。
@@ -18,6 +22,7 @@ import sys
 from pathlib import Path
 
 LEAK_DIRS = {"node_modules", ".venv", "venv", "__pycache__", "dist", "build", ".git"}
+PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]|【[^】]{2,}】|<(?!(?:https?|mailto):)[^>\n]{2,}>")
 
 SECTION_6 = re.compile(r"##\s*6\.\s*非功能需求(.*?)(?=##\s*7\.)", re.S)
 SECTION_9 = re.compile(r"##\s*9\.\s*依赖[^\n]*?(.*?)(?=##\s*10\.)", re.S)
@@ -53,7 +58,7 @@ def anchor(text: str) -> str:
 
 def main():
     if len(sys.argv) < 2:
-        print("用法: check_source.py <03-source/>", file=sys.stderr)
+        print("用法: check_source.py <07-source/>", file=sys.stderr)
         sys.exit(2)
     root = Path(sys.argv[1])
     if not root.is_dir():
@@ -79,7 +84,7 @@ def main():
         if not any(k in rt for k in ("启动", "运行", "python ", "npm ", "go run", "如何")):
             problems.append("README 里没有启动/运行命令")
 
-        # 非功能需求落实对照：自动找 03-source/ 上一级的 01-prd.md
+        # 非功能需求落实对照：自动找 07-source/ 上一级的 01-prd.md
         prd = root.parent / "01-prd.md"
         if prd.is_file():
             items = extract_requirements(prd.read_text(encoding="utf-8"))
@@ -100,6 +105,17 @@ def main():
             elif missing:
                 problems.append(f"以下 PRD 非功能/风险条目在 README 没有对应落实声明: {missing[:6]}")
 
+    # API 接口文档检查：自动找上一级 07-api-docs.md（前后端分离必交产物）
+    api = root.parent / "07-api-docs.md"
+    if not api.is_file():
+        problems.append("缺 07-api-docs.md（系统 API 接口文档，前后端对接契约）")
+    else:
+        at = api.read_text(encoding="utf-8")
+        if "接口" not in at:
+            problems.append("07-api-docs.md 里没有接口条目（接口总览/接口明细）")
+        elif PLACEHOLDER.search(at):
+            problems.append("07-api-docs.md 仍有占位符未替换（[ ] / 【 】 / 非链接 < >）")
+
     print(f"代码包检查: {root}")
     for pr in problems:
         print(f"  FAIL {pr}")
@@ -109,7 +125,7 @@ def main():
         sys.exit(1)
     if leaks:
         sys.exit(2)
-    print("  通过: README 有启动命令、无依赖目录混入、非功能落实对照完整")
+    print("  通过: README 有启动命令、无依赖目录混入、非功能落实对照完整、API 接口文档齐全")
     sys.exit(0)
 
 

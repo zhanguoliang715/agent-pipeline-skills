@@ -26,10 +26,29 @@ ROOT = Path(__file__).resolve().parent.parent
 
 CHECK_PRD = ROOT / "product-manager" / "scripts" / "check_prd.py"
 CHECK_REVIEW = ROOT / "requirement-reviewer" / "scripts" / "check_review.py"
+CHECK_PROTOTYPE = ROOT / "prototype-designer" / "scripts" / "check_prototype.py"
+CHECK_UI = ROOT / "ui-designer" / "scripts" / "check_ui.py"
+CHECK_DATABASE = ROOT / "database-designer" / "scripts" / "check_database.py"
+CHECK_ARCHITECTURE = ROOT / "architecture-designer" / "scripts" / "check_architecture.py"
 CHECK_SOURCE = ROOT / "software-developer" / "scripts" / "check_source.py"
 CHECK_QA = ROOT / "qa-tester" / "scripts" / "check_qa.py"
 SCAN_DANGER = ROOT / "security-pentester" / "scripts" / "scan_danger.py"
 SCAN_SECURITY = ROOT / "security-pentester" / "scripts" / "scan_security.py"
+
+API_OK = """# 系统 API 接口文档
+
+## 接口总览
+| 接口 | 方法 | 路径 | 对应 FR |
+|---|---|---|---|
+| 登录 | POST | /api/login | FR-02 |
+
+## 接口明细
+### POST /api/login
+- 请求参数：username(string, 必填)
+- 请求示例：{"username": "u1"}
+- 返回结构：code, message, data{token}
+- 错误码：40001 参数缺失
+"""
 
 PRD_TEN = """# 示例 PRD
 
@@ -290,7 +309,11 @@ def _(tmp):
 
 @test("check_source 通过=0")
 def _(tmp):
-    d = tmp / "src_ok"
+    # 独立工作区：07-source/ 上一级有 07-api-docs.md（前后端分离必交契约）
+    ws = tmp / "ws_ok"
+    ws.mkdir()
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
     d.mkdir()
     w("README.md", d / "README.md", "# 项目\n运行：python main.py")
     return run(CHECK_SOURCE, str(d)) == 0
@@ -298,14 +321,43 @@ def _(tmp):
 
 @test("check_source 缺README=1")
 def _(tmp):
-    d = tmp / "src_noreadme"
+    ws = tmp / "ws_noreadme"
+    ws.mkdir()
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
     d.mkdir()
+    return run(CHECK_SOURCE, str(d)) == 1
+
+
+@test("check_source 缺API文档=1")
+def _(tmp):
+    # 前后端分离模式：没有 07-api-docs.md 必须 FAIL
+    ws = tmp / "ws_noapi"
+    ws.mkdir()
+    d = ws / "07-source"
+    d.mkdir()
+    w("README.md", d / "README.md", "# 项目\n运行：python main.py")
+    return run(CHECK_SOURCE, str(d)) == 1
+
+
+@test("check_source API文档占位=1")
+def _(tmp):
+    ws = tmp / "ws_api_ph"
+    ws.mkdir()
+    w("07-api-docs.md", ws / "07-api-docs.md",
+      API_OK.replace("/api/login", "[待确认]"))
+    d = ws / "07-source"
+    d.mkdir()
+    w("README.md", d / "README.md", "# 项目\n运行：python main.py")
     return run(CHECK_SOURCE, str(d)) == 1
 
 
 @test("check_source 依赖目录混入=2")
 def _(tmp):
-    d = tmp / "src_leak"
+    ws = tmp / "ws_leak"
+    ws.mkdir()
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
     d.mkdir()
     w("README.md", d / "README.md", "# 项目\n运行：python main.py")
     (d / "node_modules").mkdir()
@@ -315,8 +367,11 @@ def _(tmp):
 @test("check_source 带PRD非功能未落实=1")
 def _(tmp):
     # 刺 5：PRD 写了非功能需求/风险预案，交付包 README 无落实声明 → FAIL
-    w("01-prd.md", tmp / "01-prd.md", PRD_TEN)
-    d = tmp / "src_nfr_bad"
+    ws = tmp / "ws_nfr_bad"
+    ws.mkdir()
+    w("01-prd.md", ws / "01-prd.md", PRD_TEN)
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
     d.mkdir()
     w("README.md", d / "README.md", "# 项目\n运行：python main.py\n")
     return run(CHECK_SOURCE, str(d)) == 1
@@ -325,8 +380,11 @@ def _(tmp):
 @test("check_source 带PRD非功能已落实=0")
 def _(tmp):
     # 落实声明逐条抄 PRD 条目原文开头 + 实现说明 → 通过
-    w("01-prd.md", tmp / "01-prd.md", PRD_TEN)
-    d = tmp / "src_nfr_ok"
+    ws = tmp / "ws_nfr_ok"
+    ws.mkdir()
+    w("01-prd.md", ws / "01-prd.md", PRD_TEN)
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
     d.mkdir()
     w("README.md", d / "README.md",
       "# 项目\n运行：python main.py\n\n## 非功能需求落实\n"
@@ -379,6 +437,145 @@ def _(tmp):
 @test("check_qa 缺参=2")
 def _(tmp):
     return run(CHECK_QA) == 2
+
+
+@test("check_prototype 通过=0")
+def _(tmp):
+    f = w("proto_ok.md", tmp / "proto_ok.md",
+          "# 原型设计文档\n## 一、页面清单\n| 页面 | 对应 FR | 页面目标 |\n| 登录页 | FR-02 | 用户登录 |\n"
+          "## 二、页面框架\n### 登录页\n- 结构：顶部导航/内容区/底部操作\n- 交互：点击登录 → 校验 → 跳首页\n")
+    return run(CHECK_PROTOTYPE, f) == 0
+
+
+@test("check_prototype 缺FR引用=1")
+def _(tmp):
+    f = w("proto_nofr.md", tmp / "proto_nofr.md",
+          "# 原型设计文档\n## 一、页面清单\n| 页面 | 页面目标 |\n| 登录页 | 用户登录 |\n")
+    return run(CHECK_PROTOTYPE, f) == 1
+
+
+@test("check_prototype 占位残留=2")
+def _(tmp):
+    f = w("proto_ph.md", tmp / "proto_ph.md",
+          "# 原型设计文档\n## 一、页面清单\n| 页面 | 对应 FR | 页面目标 |\n| 登录页 | FR-02 | [待确认] |\n")
+    return run(CHECK_PROTOTYPE, f) == 2
+
+
+@test("check_prototype 文件不存在=3")
+def _(tmp):
+    return run(CHECK_PROTOTYPE, str(tmp / "nope.md")) == 3
+
+
+@test("check_prototype 缺参=2")
+def _(tmp):
+    return run(CHECK_PROTOTYPE) == 2
+
+
+@test("check_ui 通过=0")
+def _(tmp):
+    d = tmp / "ui_ok"
+    d.mkdir()
+    (d / "登录页.png").write_bytes(b"fake")
+    w("design-spec.md", d / "design-spec.md",
+      "# UI 设计规范\n主色：#2563EB\n字体：标题 20px\nFR-02 登录页\n")
+    return run(CHECK_UI, str(d)) == 0
+
+
+@test("check_ui 缺设计图=1")
+def _(tmp):
+    d = tmp / "ui_noimg"
+    d.mkdir()
+    return run(CHECK_UI, str(d)) == 1
+
+
+@test("check_ui 缺design-spec=1")
+def _(tmp):
+    d = tmp / "ui_nospec"
+    d.mkdir()
+    (d / "登录页.png").write_bytes(b"fake")
+    return run(CHECK_UI, str(d)) == 1
+
+
+@test("check_ui 目录不存在=3")
+def _(tmp):
+    return run(CHECK_UI, str(tmp / "nope")) == 3
+
+
+@test("check_ui 缺参=2")
+def _(tmp):
+    return run(CHECK_UI) == 2
+
+
+@test("check_database 通过=0")
+def _(tmp):
+    f = w("db_ok.md", tmp / "db_ok.md",
+          "# 数据库设计文档\n## 一、表清单\n| 表名 | 用途 | 对应 FR |\n| users | 用户 | FR-02 |\n"
+          "## 二、表结构\n### users\n| 字段 | 类型 | 主键 |\n| id | INT | 是 |\n"
+          "## 三、关联关系\n- orders.user_id -> users.id\n")
+    return run(CHECK_DATABASE, f) == 0
+
+
+@test("check_database 缺关联关系=1")
+def _(tmp):
+    f = w("db_norel.md", tmp / "db_norel.md",
+          "# 数据库设计文档\n## 一、表清单\n| 表名 | 用途 |\n| users | 用户 |\n"
+          "## 二、表结构\n### users\n| 字段 | 类型 |\n| id | INT |\n")
+    return run(CHECK_DATABASE, f) == 1
+
+
+@test("check_database 占位残留=2")
+def _(tmp):
+    f = w("db_ph.md", tmp / "db_ph.md",
+          "# 数据库设计文档\n## 一、表清单\n| 表名 | 用途 |\n| users | 【待确认】 |\n"
+          "## 二、表结构\n### users\n| 字段 | 类型 |\n| id | INT |\n"
+          "## 三、关联关系\n- orders.user_id -> users.id\n")
+    return run(CHECK_DATABASE, f) == 2
+
+
+@test("check_database 文件不存在=3")
+def _(tmp):
+    return run(CHECK_DATABASE, str(tmp / "nope.md")) == 3
+
+
+@test("check_database 缺参=2")
+def _(tmp):
+    return run(CHECK_DATABASE) == 2
+
+
+@test("check_architecture 通过=0")
+def _(tmp):
+    f = w("arch_ok.md", tmp / "arch_ok.md",
+          "# 架构设计文档\n## 一、分层架构\n| 层 | 职责 |\n| 表现层 | 页面渲染 |\n"
+          "## 二、模块划分\n| 模块 | 职责 |\n| 用户模块 | 用户管理 |\n"
+          "## 三、扩展性设计\n- 新增功能挂到对应模块，扩展点已预留\n")
+    return run(CHECK_ARCHITECTURE, f) == 0
+
+
+@test("check_architecture 缺扩展性=1")
+def _(tmp):
+    f = w("arch_noext.md", tmp / "arch_noext.md",
+          "# 架构设计文档\n## 一、分层架构\n| 层 | 职责 |\n| 表现层 | 页面渲染 |\n"
+          "## 二、模块划分\n| 模块 | 职责 |\n| 用户模块 | 用户管理 |\n")
+    return run(CHECK_ARCHITECTURE, f) == 1
+
+
+@test("check_architecture 占位残留=2")
+def _(tmp):
+    f = w("arch_ph.md", tmp / "arch_ph.md",
+          "# 架构设计文档\n## 一、分层架构\n| 层 | 职责 |\n| 表现层 | <待定> |\n"
+          "## 二、模块划分\n| 模块 | 职责 |\n| 用户模块 | 用户管理 |\n"
+          "## 三、扩展性设计\n- 扩展点已预留\n")
+    return run(CHECK_ARCHITECTURE, f) == 2
+
+
+@test("check_architecture 文件不存在=3")
+def _(tmp):
+    return run(CHECK_ARCHITECTURE, str(tmp / "nope.md")) == 3
+
+
+@test("check_architecture 缺参=2")
+def _(tmp):
+    return run(CHECK_ARCHITECTURE) == 2
 
 
 @test("scan_danger 干净JS=0")
@@ -479,9 +676,10 @@ def main():
     if len(sys.argv) != 1:
         print("用法: python scripts/regression_test.py", file=sys.stderr)
         return 2
-    if not all(p.exists() for p in (CHECK_PRD, CHECK_REVIEW, CHECK_SOURCE,
+    if not all(p.exists() for p in (CHECK_PRD, CHECK_REVIEW, CHECK_PROTOTYPE, CHECK_UI,
+                                    CHECK_DATABASE, CHECK_ARCHITECTURE, CHECK_SOURCE,
                                     CHECK_QA, SCAN_DANGER, SCAN_SECURITY)):
-        print(f"错误: 六棒脚本缺失，仓库不完整: {ROOT}", file=sys.stderr)
+        print(f"错误: 各棒脚本缺失，仓库不完整: {ROOT}", file=sys.stderr)
         return 2
 
     passed = 0

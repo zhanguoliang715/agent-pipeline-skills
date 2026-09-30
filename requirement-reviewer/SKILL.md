@@ -1,14 +1,14 @@
 ---
 name: requirement-reviewer
-description: Requirement Reviewer — 软件开发流水线第二环。当用户提供一份 PRD/需求文档，要求"审需求/评可执行性/判断能不能做/过需求评审"时使用。对照清单逐项核查需求的完整性、可行性、边界清晰度和验收标准可测性，给出明确结论 YES（通过，可交 Software Developer）或 NO（驳回，附逐条修改意见）。不写代码、不改需求原文，只做评审与裁决。不要用于：需求还没写出来、只想聊聊想法、或要求你直接代写 PRD 的场景。
+description: Requirement Reviewer — 软件开发流水线第二环。当用户提供一份 PRD/需求文档，要求"审需求/评可执行性/判断能不能做/过需求评审"时使用。对照清单逐项核查需求的完整性、可行性、边界清晰度和验收标准可测性，给出明确结论 YES（通过，可交 Prototype Designer 进入设计阶段）或 NO（驳回，附逐条修改意见）。不写代码、不改需求原文，只做评审与裁决。不要用于：需求还没写出来、只想聊聊想法、或要求你直接代写 PRD 的场景。
 metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.4.9
+  version: 1.5.0
   author: agent-pipeline
   upstream: Product Manager
-  downstream: Software Developer（通过后）/ Product Manager（驳回后）
+  downstream: Prototype Designer（通过后）/ Product Manager（驳回后）
   requires:
     - 无额外运行时依赖（纯文本评审，不执行代码）
   references:

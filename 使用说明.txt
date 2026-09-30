@@ -1,9 +1,9 @@
 软件开发流水线 Skill 使用说明
 =================================
 
-一套把"写需求 -> 评审 -> 开发 -> 测试 -> 安全攻防"固化成六个独立 Skill 的工作区：
-棒 1-5 是五个单棒，pipeline-orchestrator 是总调度。靠固定文件名和门禁脚本衔接，
-不靠口头交接。单棒可独立部署，整套由总调度编排。
+一套把"写需求 -> 评审 -> 设计（原型/UI/数据库/架构）-> 前后端开发 -> 测试 -> 安全攻防"
+固化成十个独立 Skill 的工作区：棒 1-9 是九个单棒，pipeline-orchestrator 是总调度。
+靠固定文件名和门禁脚本衔接，不靠口头交接。单棒可独立部署，整套由总调度编排。
 
 --------------------------------------------------
 目录结构
@@ -11,13 +11,17 @@
 D:\agent skill\
 ├── product-manager\            棒1：写 PRD
 ├── requirement-reviewer\       棒2：需求评审
-├── software-developer\          棒3：写代码
-├── qa-tester\                  棒4：功能测试
-├── security-pentester\          棒5：安全攻防（终点）
+├── prototype-designer\         棒3：产品原型设计（页面线框稿）
+├── ui-designer\                棒4：UI 设计（高保真界面图）
+├── database-designer\          棒5：数据库设计
+├── architecture-designer\      棒6：架构设计
+├── software-developer\         棒7：前后端分离开发
+├── qa-tester\                  棒8：功能测试
+├── security-pentester\         棒9：安全攻防（终点）
 ├── pipeline-orchestrator\      总调度：一句话跑完整条流水线（不可单独部署）
 ├── scripts\                    仓库级：仅整套部署需要
 │   ├── regression_test.py      行为回归测试（机器实测退出码契约）
-│   └── smoke_pipeline.py       端到端冒烟（五棒门禁链 + 打回/修复路由）
+│   └── smoke_pipeline.py       端到端冒烟（门禁链 + 打回/修复路由）
 ├── .github\workflows\           CI：validate + regression + smoke（仅整套部署需要）
 ├── validate_pipeline.py        全流水线一致性校验器（仅整套部署需要）
 ├── 更新日志.md                   每次 GitHub 上传的变更记录（文件级备份）
@@ -33,31 +37,35 @@ D:\agent skill\
   scripts\           可执行校验脚本
 
 --------------------------------------------------
-独立部署（棒 1-5）
+独立部署（棒 1-9）
 --------------------------------------------------
-五个单棒各自可单独拷出使用，不需要整套仓库、orchestrator、仓库级脚本或 CI。
+九个单棒各自可单独拷出使用，不需要整套仓库、orchestrator、仓库级脚本或 CI。
 拷走整个棒目录后，以该棒目录为 CWD 跑校验脚本：
 
   棒1 product-manager        python scripts\check_prd.py 01-prd.md
   棒2 requirement-reviewer   python scripts\check_review.py 02-requirement-review.md
-  棒3 software-developer     python scripts\check_source.py 03-source\
-  棒4 qa-tester              python scripts\check_qa.py 04-qa-test-report.md
-  棒5 security-pentester     python scripts\scan_security.py 03-source\
+  棒3 prototype-designer     python scripts\check_prototype.py 03-prototype-design.md
+  棒4 ui-designer            python scripts\check_ui.py 04-ui-design\
+  棒5 database-designer      python scripts\check_database.py 05-database-design.md
+  棒6 architecture-designer  python scripts\check_architecture.py 06-architecture-design.md
+  棒7 software-developer     python scripts\check_source.py 07-source\
+  棒8 qa-tester              python scripts\check_qa.py 08-qa-test-report.md
+  棒9 security-pentester     python scripts\scan_security.py 07-source\
 
 单棒目录是自包含的：SKILL.md（文末有"独立部署"章节）+ references\（配套本棒
 自身，不悬空）+ scripts\，产物文件名固定不变。运行时依赖见各棒 SKILL.md：
-四棒只用标准库（Python 3.9+），安全棒另需 pip install "bandit==1.9.4"，
+八个 check 脚本只用标准库（Python 3.9+），安全棒另需 pip install "bandit==1.9.4"，
 不装只跑正则层。pipeline-orchestrator 不可单独部署（只调度不产出，必须与
-五棒同仓库根）。
+九棒同仓库根）。
 
 --------------------------------------------------
 角色职责和产出
 --------------------------------------------------
 棒0 pipeline-orchestrator（总调度，先跑它）
   产出：无（只调度）
-  干什么：按顺序叫 1-5 棒干活，检查每棒产物和门禁脚本，打回自动路由
+  干什么：按顺序叫 1-9 棒干活，检查每棒产物和门禁脚本，打回自动路由
           （评审 NO 退回 PM、测试致命打回开发、安全高危修完再攻），
-          最后打包五件套交付
+          最后打包九件套交付
   门禁：确认走完整条流水线 + 确认工作目录，才启动
 
 棒1 product-manager
@@ -67,22 +75,43 @@ D:\agent skill\
 
 棒2 requirement-reviewer
   产出：02-requirement-review.md
-  干什么：评审 PRD 可执行性，六维度打分，结论 YES / NO / 退回
+  干什么：评审 PRD 可执行性，七维度打分，结论 YES / NO / 退回
   门禁：收到的不是 PRD 就退回；最多打回 2 次（共 3 次评审机会）
 
-棒3 software-developer
-  产出：03-source\（目录，含 README）
-  干什么：按 YES 的 PRD 写可运行代码
+棒3 prototype-designer
+  产出：03-prototype-design.md
+  干什么：产品经理按功能需求画页面框架线框稿（Axure/Figma 思路）
   门禁：02 结论不是 YES 不开工
 
-棒4 qa-tester
-  产出：04-qa-test-report.md
-  干什么：搭环境跑主流程，列 bug 分级
+棒4 ui-designer
+  产出：04-ui-design\（设计图 + design-spec.md）
+  干什么：设计师把线框转高保真界面设计图（配色/字体/组件规范）
+  门禁：原型文档缺失或未放行不开工
+
+棒5 database-designer
+  产出：05-database-design.md
+  干什么：技术经理按功能需求设计表结构、字段、主外键与关联
+  门禁：02 结论不是 YES 不开工
+
+棒6 architecture-designer
+  产出：06-architecture-design.md
+  干什么：技术经理定分层架构、模块边界与扩展点（便于后续扩展）
+  门禁：无 FR 清单不开工
+
+棒7 software-developer（前后端分离）
+  产出：07-source\（目录，含 README）+ 07-api-docs.md（系统 API 接口文档）
+  干什么：前端按原型+UI 写界面；后端按数据库+架构写接口并同步产 API 文档；
+          双方写好按接口文档联调，边调边改接口
+  门禁：02 不是 YES 或设计文档（03-06）不齐不开工
+
+棒8 qa-tester
+  产出：08-qa-test-report.md
+  干什么：搭环境跑主流程，列 bug 分级，核对非功能与风险预案落地
   门禁：按 README 起不来 = 致命 bug 直接打回
 
-棒5 security-pentester
-  产出：05-security-pentest-report.md
-  干什么：授权门禁后多轮攻防，高危修完再攻
+棒9 security-pentester
+  产出：09-security-pentest-report.md
+  干什么：授权门禁后多轮攻防，高危修完回归再攻
   门禁：外部/公网目标一律拒绝
 
 --------------------------------------------------
@@ -93,32 +122,44 @@ D:\agent skill\
 工作区\
 ├── 01-prd.md
 ├── 02-requirement-review.md
-├── 03-source\
-├── 04-qa-test-report.md
-├── 05-security-pentest-report.md
+├── 03-prototype-design.md
+├── 04-ui-design\
+├── 05-database-design.md
+├── 06-architecture-design.md
+├── 07-source\
+├── 07-api-docs.md
+├── 08-qa-test-report.md
+├── 09-security-pentest-report.md
 └── history\                 覆盖写前的历史归档
 
 推荐让总调度跑：说"走流水线，我要做【项目名】，想法是【一句话】"，
-orchestrator 会从棒 1 一路叫到棒 5，打回自动路由，最后给你五件套清单。
-也可以单棒直接叫：说"帮我写 PRD / 审需求 / 写代码 / 测程序 / 做安全测试"。
+orchestrator 会从棒 1 一路叫到棒 9，打回自动路由，最后给你九件套清单。
+也可以单棒直接叫：说"帮我写 PRD / 审需求 / 画原型 / 做UI / 设计数据库 /
+做架构 / 写代码 / 测程序 / 做安全测试"。
 
 每棒交稿前跑对应脚本做结构校验（整套部署在工作区根目录）：
 
   python product-manager\scripts\check_prd.py 01-prd.md
   python requirement-reviewer\scripts\check_review.py 02-requirement-review.md
-  python software-developer\scripts\check_source.py 03-source\
-  python qa-tester\scripts\check_qa.py 04-qa-test-report.md
-  python security-pentester\scripts\scan_security.py 03-source\
+  python prototype-designer\scripts\check_prototype.py 03-prototype-design.md
+  python ui-designer\scripts\check_ui.py 04-ui-design\
+  python database-designer\scripts\check_database.py 05-database-design.md
+  python architecture-designer\scripts\check_architecture.py 06-architecture-design.md
+  python software-developer\scripts\check_source.py 07-source\
+  python qa-tester\scripts\check_qa.py 08-qa-test-report.md
+  python security-pentester\scripts\scan_security.py 07-source\
 
 --------------------------------------------------
 退出码（两套，别混）
 --------------------------------------------------
-四棒 check 脚本（check_prd / check_review / check_source / check_qa）：
+八个 check 脚本（check_prd / check_review / check_prototype / check_ui /
+check_database / check_architecture / check_source / check_qa）：
   0 = 通过
-  1 = 缺内容（缺章节/缺结论/缺 README 等）
+  1 = 缺内容（缺章节/缺结论/缺页面清单/缺设计图/缺表关联/缺分层/
+       缺 README/缺 API 文档等）
   2 = 业务警告，各脚本语义不同：
-        check_prd      = 占位残留（[ ] / 【 】 / < > 未替换）
-        check_review   = 占位残留
+        check_prd / check_review / check_prototype / check_database /
+        check_architecture / check_ui = 占位残留（[ ] / 【 】 / 非链接 < > 未替换）
         check_source   = 依赖/构建目录混入交付包
         check_qa       = 有未修复致命/严重项
   3 = 路径不存在（文件或目录）
@@ -135,11 +176,12 @@ orchestrator 会从棒 1 一路叫到棒 5，打回自动路由，最后给你�
 --------------------------------------------------
 history/ 留档
 --------------------------------------------------
-01-05 是固定文件名，每次覆盖写之前把上一版复制到 history\：
+01-09 是固定文件名，每次覆盖写之前把上一版复制到 history\：
   命名：history\产物主干-r最大序号+1-YYYYMMDDTHHMM
         （如 history\02-requirement-review-r2-20260928T1435.md）
   r 取已有最大序号 +1，不要数文件个数（部分清理过会重号吞档）
-  03 是目录，归档时整个复制但排除 .git/依赖/构建产物
+  04/07 是目录，归档时整个复制但排除 .git/依赖/构建产物；
+  07 的配套单文件 07-api-docs.md 同样归档
   归档即只读，history/ 只进不删，清理由你决定
 
 --------------------------------------------------
@@ -163,7 +205,7 @@ history/ 留档
 环境要求
 --------------------------------------------------
 - Python 3.9 以上
-- 四棒检查脚本、校验器、回归测试只用标准库，不用装任何东西
+- 八个 check 脚本、校验器、回归测试只用标准库，不用装任何东西
 - 安全棒可选深度扫描：pip install "bandit==1.9.4"
   不装也能跑，只跑正则粗扫
 - Windows / macOS / Linux 均可，路径全用 pathlib
@@ -173,9 +215,9 @@ history/ 留档
 --------------------------------------------------
 改完任何 skill 或脚本后，跑三个校验：
 
-  python validate_pipeline.py         # 结构一致性（六棒、references 不悬空、scripts 存在）
-  python scripts\regression_test.py   # 行为回归（六棒脚本退出码契约，机器实测）
-  python scripts\smoke_pipeline.py    # 端到端冒烟（五棒门禁链 + 打回/修复路由，机器实测）
+  python validate_pipeline.py         # 结构一致性（十棒、references 不悬空、scripts 存在）
+  python scripts\regression_test.py   # 行为回归（各棒脚本退出码契约，机器实测）
+  python scripts\smoke_pipeline.py    # 端到端冒烟（门禁链 + 打回/修复路由，机器实测）
 
 三个都退出 0 = 全绿。validate 管"结构齐不齐"，regression 管"行为对不对"，
 冒烟管"整条调度链跑不跑得通"。

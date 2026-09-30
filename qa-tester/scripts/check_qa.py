@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """功能测试报告检查（QA Tester 输出前门禁）。
 
-用法：python scripts/check_qa.py 04-qa-test-report.md
+用法：python scripts/check_qa.py 08-qa-test-report.md
 退出码：0=通过 1=缺结论/bug 分级表/非功能与风险预案核对 2=仍有未修复致命/严重 bug
 """
 import re
@@ -14,7 +14,7 @@ CONCLUSIONS = ["通过", "打回", "不通过", "FAIL", "PASS"]
 
 def main():
     if len(sys.argv) < 2:
-        print("用法: check_qa.py <04-qa-test-report.md>", file=sys.stderr)
+        print("用法: check_qa.py <08-qa-test-report.md>", file=sys.stderr)
         sys.exit(2)
     p = Path(sys.argv[1])
     if not p.is_file():
