@@ -34,13 +34,25 @@ def main():
     for pr in problems:
         print(f"  FAIL {pr}")
 
-    # 未修复致命/严重 bug 计数（粗糙：出现"致命/严重"且不在"已修复"附近）
-    unresolved = re.findall(r"[致命严重][^\n]{0,40}", text)
-    unresolved = [u for u in unresolved if "已修复" not in u and "已回归" not in u]
+    # 未修复致命/严重 bug：只在 bug 清单行里判，避免表头与说明文字误伤。
+    # 旧判据用字符类 [致命严重]，会把"严重程度：一般"这类表头也算成未修复项。
+    LEVEL = re.compile(r"(致命|严重)")
+    FIXED = re.compile(r"已修复|已回归|已关闭|已验证")
+    BUGROW = re.compile(r"BUG-\d+|未修复|待修复|修复中|未回归")
+    # 「致命：程序无法启动」这类无编号写法也要算；"严重程度：一般"因冒号位置不同被排除
+    GRADE_COLON = re.compile(r"(?:致命|严重)\s*[:：]\s*\S{4,}")
+    unresolved = []
+    for i, line in enumerate(text.splitlines(), 1):
+        s = line.strip()
+        if not LEVEL.search(s) or FIXED.search(s):
+            continue
+        if not (BUGROW.search(s) or GRADE_COLON.search(s)):
+            continue
+        unresolved.append(f"L{i}: {s[:60]}")
     if unresolved:
-        print(f"  WARN 可能仍有未修复致命/严重项: {len(unresolved)} 处")
+        print(f"  WARN 可能仍有未修复致命/严重项: {len(unresolved)} 处（按 bug 清单行判定）")
         for u in unresolved[:5]:
-            print(f"    - {u.strip()}")
+            print(f"    - {u}")
 
     if problems:
         sys.exit(1)

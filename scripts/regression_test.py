@@ -136,6 +136,37 @@ QA_FATAL = """# 测试报告
 - 性能、安全、风险预案全部核对通过
 """
 
+# 旧判据 [致命严重] 是字符类：会把「严重程度：一般」这类表头判成未修复致命项
+QA_SEV_OK = """# 测试报告
+
+结论：通过
+
+## 二、Bug 清单
+| 编号 | 严重程度 | 标题 | 复现步骤 | 预期 vs 实际 |
+|---|---|---|---|---|
+| BUG-01 | 严重程度：一般 | 文案错别字 | 打开首页 | 已修复并回归通过 |
+
+## 四、非功能与风险预案核对
+| PRD 条目 | 验证方式 | 结果 |
+|---|---|---|
+| 性能：列表 < 2s | 实测 | 通过 |
+"""
+
+# 无 BUG-xx 编号、但写了「致命：xxx」的报告仍必须被拦下
+QA_FATAL_NONUM = """# 测试报告
+
+结论：打回
+
+## Bug 清单
+- 致命：程序无法启动
+- 严重：登录后立即崩溃
+
+## 非功能与风险预案核对
+| PRD 条目 | 验证方式 | 结果 |
+|---|---|---|
+| 性能：列表 < 2s | 实测 | 通过 |
+"""
+
 
 def run(script, *args):
     cmd = [sys.executable, str(script), *args]
@@ -670,6 +701,106 @@ def _(tmp):
     d.mkdir()
     (d / "a.py").write_text("", encoding="utf-8")
     return run(SCAN_SECURITY, str(d)) == 5
+
+
+@test("check_qa 严重程度表头不误报=0")
+def _(tmp):
+    # 旧判据用字符类 [致命严重]，"严重程度：一般"表头会被算成未修复致命项（退 2）
+    f = w("qa_sev_header.md", tmp / "qa_sev_header.md", QA_SEV_OK)
+    return run(CHECK_QA, f) == 0
+
+
+@test("check_qa 无编号致命项仍拦=2")
+def _(tmp):
+    # 「致命：程序无法启动」没有 BUG-xx 编号，但仍必须判为未修复（退 2）
+    f = w("qa_fatal_nonum.md", tmp / "qa_fatal_nonum.md", QA_FATAL_NONUM)
+    return run(CHECK_QA, f) == 2
+
+
+@test("check_prd HTML标签不误伤=0")
+def _(tmp):
+    f = w("prd_html.md", tmp / "prd_html.md",
+          PRD_TEN.replace("- 外部依赖：无", "- 外部依赖：无（页面用 <div> 布局）"))
+    return run(CHECK_PRD, f) == 0
+
+
+@test("check_prd 泛型尖括号不误伤=0")
+def _(tmp):
+    f = w("prd_generic.md", tmp / "prd_generic.md",
+          PRD_TEN.replace("- 外部依赖：无", "- 外部依赖：无（配置结构 Map<String, Object>）"))
+    return run(CHECK_PRD, f) == 0
+
+
+@test("check_prd 脚注不误伤=0")
+def _(tmp):
+    f = w("prd_footnote.md", tmp / "prd_footnote.md",
+          PRD_TEN.replace("- 外部依赖：无", "- 外部依赖：无[^1]"))
+    return run(CHECK_PRD, f) == 0
+
+
+@test("check_source 非功能落实自然转述=0")
+def _(tmp):
+    # 语义正确但措辞不同：只做前 8 字符硬锚会误判为缺失（退 1）
+    ws = tmp / "ws_nfr_paraphrase"
+    ws.mkdir()
+    w("01-prd.md", ws / "01-prd.md", PRD_TEN)
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
+    d.mkdir()
+    w("README.md", d / "README.md",
+      "# 项目\n运行：python main.py\n\n## 非功能需求落实\n"
+      "- 密码存储：采用加盐哈希，数据库不明文保存密码\n"
+      "- 列表加载：实测 1.5s，满足 2s 内返回\n")
+    return run(CHECK_SOURCE, str(d)) == 0
+
+
+@test("check_source NFR编号锚定=0")
+def _(tmp):
+    # PRD 条目带 NFR-xx 编号时，README 回写该编号即可通过，不必逐字照抄
+    ws = tmp / "ws_nfr_id"
+    ws.mkdir()
+    w("01-prd.md", ws / "01-prd.md",
+      PRD_TEN.replace("- 性能：列表加载 < 2s", "- NFR-01 性能：列表加载 < 2s")
+             .replace("- 安全：密码不得明文存储", "- NFR-02 安全：密码不得明文存储"))
+    w("07-api-docs.md", ws / "07-api-docs.md", API_OK)
+    d = ws / "07-source"
+    d.mkdir()
+    w("README.md", d / "README.md",
+      "# 项目\n运行：python main.py\n\n## 非功能需求落实\n"
+      "- NFR-01：首页接口加缓存，实测 1.5s\n"
+      "- NFR-02：密码加盐哈希存储\n")
+    return run(CHECK_SOURCE, str(d)) == 0
+
+
+@test("check_review 无规范化结论行=1")
+def _(tmp):
+    # 正文提到 YES / NO 但没有结论行：旧判据（子串存在性）会放行
+    f = w("review_noline.md", tmp / "review_noline.md",
+          "# 需求评审报告\n本报告按 YES / NO 的判定标准执行。\n"
+          "## 完整性\n完整。\n## 可执行性\n可执行。\n## 边界\n清晰。\n"
+          "## 验收\n可验收。\n## 技术可行\n可行。\n## 合规\n合规。\n## 一致性\n一致。\n")
+    return run(CHECK_REVIEW, f) == 1
+
+
+@test("check_ui 纯规范模式=0")
+def _(tmp):
+    # 宿主无生图能力时的降级通道：只校验 design-spec.md
+    d = tmp / "ui_text_only"
+    d.mkdir()
+    w("design-spec.md", d / "design-spec.md",
+      "# UI 设计规范\n主色：#2563EB\n字体：标题 20px\nFR-02 登录页\n"
+      "交付形态：纯规范模式，原因：宿主无生图能力\n")
+    return run(CHECK_UI, str(d), "--text-only") == 0
+
+
+@test("check_ui 纯规范模式缺降级原因=1")
+def _(tmp):
+    # --text-only 是救场开关，不允许无理由跳过设计图
+    d = tmp / "ui_text_only_no_reason"
+    d.mkdir()
+    w("design-spec.md", d / "design-spec.md",
+      "# UI 设计规范\n主色：#2563EB\n字体：标题 20px\nFR-02 登录页\n")
+    return run(CHECK_UI, str(d), "--text-only") == 1
 
 
 def main():

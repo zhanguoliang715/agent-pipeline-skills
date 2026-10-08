@@ -22,7 +22,48 @@ import sys
 from pathlib import Path
 
 LEAK_DIRS = {"node_modules", ".venv", "venv", "__pycache__", "dist", "build", ".git"}
-PLACEHOLDER = re.compile(r"\[[^\]]{2,}\]|【[^】]{2,}】|<(?!(?:https?|mailto):)[^>\n]{2,}>")
+_BRACKET = re.compile(r"\[(?!\^)[^\]]{2,}\]|【[^】]{2,}】")
+_ANGLE = re.compile(r"<(?!(?:https?|mailto):)[^>\n]{2,}>")
+
+
+def _strip_legal_angle(text: str) -> str:
+    """先移除合法的尖括号结构（自动链接 / HTML 标签 / 泛型），避免误报。
+
+    旧判据直接查裸尖括号，会把 <div>、Map<String, Object>、[^1] 这类合法写法
+    判成未替换占位，导致干净产物退 2 交不了稿。
+    """
+    t = re.sub(r"<(?:https?|mailto):[^>\n]*>", "", text)
+    t = re.sub(r"</?[a-zA-Z][\w-]*(?:\s[^<>]*?)?/?>", "", t)
+    t = re.sub(r"<[A-Za-z_][\w.]*(?:\s*,\s*[A-Za-z_][\w.\[\]<>\s]*)+\s*>", "", t)
+    return t
+
+
+class _Placeholder:
+    """占位检测器：search() 返回命中列表（空列表即无占位，可直接当布尔用）。"""
+
+    def findall(self, text: str):
+        hits = []
+        for m in _BRACKET.finditer(text):
+            hits.append(("括号占位", m.group(0)))
+        for m in _ANGLE.finditer(_strip_legal_angle(text)):
+            hits.append(("尖括号占位", m.group(0)))
+        return hits
+
+    def search(self, text: str):
+        return self.findall(text)
+
+
+PLACEHOLDER = _Placeholder()
+
+
+def placeholder_desc(text: str) -> str:
+    """把命中按类型汇总成可读文案，排错时不用猜是哪种括号。"""
+    kinds = {}
+    for kind, raw in PLACEHOLDER.findall(text):
+        kinds.setdefault(kind, []).append(raw)
+    if not kinds:
+        return ""
+    return "；".join(f"{k} {len(v)} 处：{', '.join(v[:3])}" for k, v in kinds.items())
 
 SECTION_6 = re.compile(r"##\s*6\.\s*非功能需求(.*?)(?=##\s*7\.)", re.S)
 SECTION_9 = re.compile(r"##\s*9\.\s*依赖[^\n]*?(.*?)(?=##\s*10\.)", re.S)
@@ -52,8 +93,39 @@ def extract_requirements(prd_text: str):
 
 
 def anchor(text: str) -> str:
-    """去空白后取前 8 字符作为匹配锚。"""
+    """去空白后取前 8 字符作为匹配锚（严格照抄时的快速通道）。"""
     return normalize(text)[:8]
+
+
+def matched(item: str, impl: str) -> bool:
+    """非功能 / 风险条目的落实判定，三级降级：
+
+    1) 条目带 NFR-xx / RISK-xx 编号，且落实文本中出现该编号（最稳，推荐）；
+    2) 条目前 8 字符（去空白、全角冒号归一）出现在落实文本中（照抄场景）；
+    3) 字符 2-gram 覆盖率 >= 40%（中文无空格，分词不可靠，按字粒度比对）。
+
+    只做第 2 级会把语义正确、措辞不同的转述判为缺失（退 1），逼出来的是
+    措辞对齐而不是质量提升，故补第 3 级。第 3 级会先剥掉"性能:"这类分类词
+    前缀，避免分类词写法不同拖低覆盖率。
+    """
+    ni, ni2 = normalize(item), normalize(impl)
+
+    # 1) 编号锚定
+    m = re.match(r"(?:NFR|RISK)-\d+", ni)
+    if m and m.group(0) in ni2:
+        return True
+
+    # 2) 前 8 字符锚（严格照抄）
+    if anchor(item) in ni2:
+        return True
+
+    # 3) 字符 2-gram 覆盖率
+    body = re.sub(r"^[^:：]{1,6}[:：]", "", ni) or ni
+    grams = [body[i:i + 2] for i in range(len(body) - 1)]
+    if not grams:
+        return True
+    hit = sum(1 for g in grams if g in ni2)
+    return hit / len(grams) >= 0.4
 
 
 def main():
@@ -98,7 +170,7 @@ def main():
             for kind, item in items:
                 if len(normalize(item)) < 8:
                     continue  # 过短的条目（如"外部依赖：无"）不参与强制对照
-                if anchor(item) not in normalize(impl_text):
+                if not matched(item, impl_text):
                     missing.append(f"{kind}：{item}")
             if not has_nfr_section:
                 problems.append("README 缺「非功能需求落实」小节（应逐条写明 PRD 非功能需求/风险预案的落实方式）")
@@ -114,7 +186,7 @@ def main():
         if "接口" not in at:
             problems.append("07-api-docs.md 里没有接口条目（接口总览/接口明细）")
         elif PLACEHOLDER.search(at):
-            problems.append("07-api-docs.md 仍有占位符未替换（[ ] / 【 】 / 非链接 < >）")
+            problems.append(f"07-api-docs.md 仍有占位符未替换：{placeholder_desc(at)}")
 
     print(f"代码包检查: {root}")
     for pr in problems:

@@ -99,6 +99,9 @@ repo-root/
 
 每棒交稿前都有一个对应脚本做"结构完整性门禁"，缺东西就非 0 退出。在工作区根目录跑：
 
+> **路径约定**：脚本路径与产物路径都从当前 CWD 解析，下表默认「工作区 = 仓库根」。
+> 若把产物放在别的目录，产物参数换成绝对路径（`python product-manager/scripts/check_prd.py "<WORKDIR>/01-prd.md"`），CWD 仍保持在仓库根——两者不是一回事，详见 `pipeline-orchestrator/SKILL.md` 的「WORKDIR 与 CWD 约定」。
+
 | 棒 | 命令 | 查什么 |
 |---|---|---|
 | PM | `python product-manager/scripts/check_prd.py 01-prd.md` | PRD 十节齐全、无占位残留 |

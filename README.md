@@ -33,7 +33,7 @@
 | 3 | `prototype-designer/` | `03-prototype-design.md` | 产品经理按功能需求画页面框架线稿图（Axure/Figma 思路） | 第 0 步：02 结论不是 YES 不开工 |
 | 4 | `ui-designer/` | `04-ui-design/` | 设计师把线框转高保真界面设计图（配色/字体/组件规范） | 第 0 步：原型文档缺失或未放行不开工 |
 | 5 | `database-designer/` | `05-database-design.md` | 技术经理设计表结构、字段、主外键与关联关系 | 第 0 步：02 结论不是 YES 不开工 |
-| 6 | `architecture-designer/` | `06-architecture-design.md` | 技术经理定分层架构、模块边界与扩展点 | 第 0 步：无 FR 清单不开工 |
+| 6 | `architecture-designer/` | `06-architecture-design.md` | 技术经理定分层架构、模块边界与扩展点 | 第 0 步：无 FR 清单、或 05 数据库设计未定稿不开工 |
 | 7 | `software-developer/` | `07-source/` + `07-api-docs.md` | 前后端分离开发：前端按原型+UI 写界面，后端按数据库文档写接口并出 API 文档，最后联调 | 第 0 步：02 不是 YES 或设计文档不齐不开工 |
 | 8 | `qa-tester/` | `08-qa-test-report.md` | 搭环境跑主流程，列 bug 分级，核对非功能与风险预案 | 第 0 步：按 README 起不来 = 致命 bug 直接打回 |
 | 9 | `security-pentester/` | `09-security-pentest-report.md` | 授权门禁后多轮攻防，高危修完回归再攻 | 第 0 步：外部/公网目标一律拒绝 |
@@ -137,6 +137,9 @@
 ```
 
 每棒交稿前跑对应脚本做结构校验（在工作区根目录）：
+
+> **路径约定**：脚本路径与产物路径都从当前 CWD 解析，下表默认「工作区 = 仓库根」。
+> 若把产物放在别的目录，产物参数换成绝对路径（`python product-manager/scripts/check_prd.py "<WORKDIR>/01-prd.md"`），CWD 仍保持在仓库根——两者不是一回事，详见 `pipeline-orchestrator/SKILL.md` 的「WORKDIR 与 CWD 约定」。
 
 ```bash
 python product-manager/scripts/check_prd.py 01-prd.md

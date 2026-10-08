@@ -8,7 +8,7 @@
 --------------------------------------------------
 目录结构
 --------------------------------------------------
-D:\agent skill\
+<仓库根>\
 ├── product-manager\            棒1：写 PRD
 ├── requirement-reviewer\       棒2：需求评审
 ├── prototype-designer\         棒3：产品原型设计（页面线框稿）
@@ -96,7 +96,7 @@ D:\agent skill\
 棒6 architecture-designer
   产出：06-architecture-design.md
   干什么：技术经理定分层架构、模块边界与扩展点（便于后续扩展）
-  门禁：无 FR 清单不开工
+  门禁：无 FR 清单、或 05 数据库设计未定稿不开工
 
 棒7 software-developer（前后端分离）
   产出：07-source\（目录，含 README）+ 07-api-docs.md（系统 API 接口文档）

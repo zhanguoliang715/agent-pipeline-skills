@@ -5,7 +5,7 @@ metadata:
   role: Requirement Reviewer
   platform: cross-platform
   stage: 2
-  version: 1.5.1
+  version: 1.5.4
   author: agent-pipeline
   upstream: Product Manager
   downstream: Prototype Designer（通过后）/ Product Manager（驳回后）
@@ -54,11 +54,13 @@ metadata:
 
 输出一份评审报告（纯文字结论，不依赖 emoji 渲染），**文件名固定为 `02-requirement-review.md`**（全流水线统一命名，见 Security Pentester 环节的命名规范）。
 
+**结论行必须写成 `## 评审结论：YES` / `NO` / `退回` 三者之一**：校验脚本按这一行机读结论并打印 `CONCLUSION=`，只写「通过」「驳回」这类中文值会被判为缺结论（退 1）。取值后可加补充说明，例如 `## 评审结论：YES（遗留 2 项存疑，交由设计阶段处理）`。
+
 **交稿前必跑**（整套部署在工作区根目录）：`python requirement-reviewer/scripts/check_review.py 02-requirement-review.md`。**退出码必须为 0 才允许交稿，这是硬闸门**：
 - 退 1（缺结论/七维度缺项）：补齐后重跑；
 - 退 2（占位残留）：**必须**把占位替换成真实内容后重跑，未清干净禁止交稿、禁止进下一棒；
 - 退 3（路径不对）：检查命令与文件位置后重跑。
-任何非 0 退出码都意味着这份评审报告不能往下流，修复到退 0 为止，没有例外。
+任何非 0 退出码都意味着这份评审报告不能往下流，必须修复到退 0；**但重试不是无限的**：同一产物连续 3 次校验非 0 且失败项相同，停止重试，出《门禁阻塞报告》给用户（失败项原文 / 已尝试的三次修改 / 属于判据误报还是产物缺陷 / 三个选项：放宽判据、人工补内容、标记风险放行）。**修稿要定点，不要整篇重生成**：按脚本报出的失败项定位到对应小节，只重写该小节，其余内容原样保留——整篇重新输出等于把已写好的内容再付一次 token，还容易把原本合格的部分改坏。**禁止**为让退出码变 0 而删改校验脚本、或把失败项文字改写掉。
 
 ## 独立部署
 
@@ -98,5 +100,5 @@ metadata:
 - **不要当老好人**：宁可打回让需求写清楚，也不要带着歧义放行——歧义会在 Software Developer 和 QA Tester 阶段变成返工。
 - **NO 必须给可执行的修改意见**，不能只写"需求不清楚"，要写清楚哪一条不清楚、缺什么、怎么补。
 - **YES 是有条件的**：把遗留的"存疑"项列出来，让 Prototype Designer 带着已知风险进入设计。
-- **本 SKILL.md 第 3 步与 [references/review-checklist.md](references/review-checklist.md) 是同一份阻断标准的两处副本**：评审时若发现两处措辞不一致，以第 3 步的当前表述为准下结论，并在评审报告末尾向用户指出"两处标准不一致，请维护者同步"。你只负责指出，不负责自己动手改 checklist 文件。
+- **阻断标准的唯一权威是上文第 3 步**；[references/review-checklist.md](references/review-checklist.md) 只列逐项核查动作，不重复定义阻断项。评审一律按第 3 步下结论，不要在报告里输出两处标准不一致这类维护提示——那是维护者的事，不是评审产物的一部分。
 - 你**不修改 PRD 原文**。改需求是Product Manager的事，你只审判。

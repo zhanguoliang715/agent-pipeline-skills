@@ -120,6 +120,38 @@ for skill in SKILLS:
         errors.append(f"[{skill}] 输出契约未声明固定产物名 {fname}")
 
 
+# 附加产物：同一棒的第二个交付物也必须写进输出契约
+EXTRA_NAMING = {"software-developer": "07-api-docs.md"}
+for skill, extra in EXTRA_NAMING.items():
+    sf = ROOT / skill / "SKILL.md"
+    if sf.exists() and extra not in read(sf):
+        errors.append(f"[{skill}] 输出契约未声明附加产物名 {extra}")
+
+# 文档一致性 1：.gitignore 必须覆盖九棒固定产物名，防止产物误入库
+gi_path = ROOT / ".gitignore"
+if gi_path.is_file():
+    gi = read(gi_path)
+    for _skill, _name in list(NAMING.items()) + list(EXTRA_NAMING.items()):
+        if _name not in gi:
+            errors.append(f"[.gitignore] 未忽略固定产物 {_name}（九棒命名，防产物误入库）")
+else:
+    warnings.append("[.gitignore] 不存在，跳过产物忽略检查")
+
+# 文档一致性 2：SKILL.md 自称第 X 环必须与 metadata.stage 一致
+CN_NUM = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5,
+          "六": 6, "七": 7, "八": 8, "九": 9}
+for skill in SKILLS:
+    sf = ROOT / skill / "SKILL.md"
+    if not sf.exists():
+        continue
+    _t = read(sf)
+    m_stage = re.search(r"(?m)^\s*stage:\s*(\d+)", _t)
+    m_cn = re.search(r"第\s*([一二三四五六七八九])\s*环", _t)
+    if m_stage and m_cn:
+        said, real = CN_NUM[m_cn.group(1)], int(m_stage.group(1))
+        if said != real:
+            errors.append(f"[{skill}] 自称第{said}环，但 metadata.stage={real}（棒次编号不一致）")
+
 # 各棒版本：不强制一致（各棒独立发版，改谁升谁），只警告提醒
 if len(set(versions.values())) > 1:
     warnings.append(f"各棒 version 不一致（独立发版，仅提醒）: {versions}")

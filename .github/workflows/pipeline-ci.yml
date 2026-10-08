@@ -17,13 +17,13 @@ jobs:
           python-version: "3.11"
 
       - name: Install security scanner dependency
-        run: pip install bandit
+        run: pip install "bandit==1.9.4"
 
       - name: Structure & doc consistency (validate_pipeline)
         run: python validate_pipeline.py
 
-      - name: Behavior contract regression (42 cases)
+      - name: Behavior contract regression (68+ cases)
         run: python scripts/regression_test.py
 
-      - name: End-to-end smoke (5-gate chain + reject/fix routing)
+      - name: End-to-end smoke (nine-gate chain + reject/fix routing)
         run: python scripts/smoke_pipeline.py

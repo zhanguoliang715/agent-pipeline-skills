@@ -6,13 +6,18 @@ __pycache__/
 .venv/
 venv/
 
-# 流水线运行时产物
+# 流水线运行时产物（九棒固定命名；改编号体系时必须同步改这里）
 history/
 01-prd.md
 02-requirement-review.md
-03-source/
-04-qa-test-report.md
-05-security-pentest-report.md
+03-prototype-design.md
+04-ui-design/
+05-database-design.md
+06-architecture-design.md
+07-source/
+07-api-docs.md
+08-qa-test-report.md
+09-security-pentest-report.md
 !**/.gitkeep
 
 # 编辑器/系统
