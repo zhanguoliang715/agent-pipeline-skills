@@ -23,6 +23,9 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install security scanner dependency
+        # bandit 1.9.4 的 Requires-Python 是 >=3.10，3.9 装不上。
+        # 核心八棒脚本是零依赖的，3.9 只跳过可选深度扫描（回归用例会自动跳过 bandit 相关断言）。
+        if: matrix.python != '3.9'
         run: pip install "bandit==1.9.4"
 
       - name: Syntax gate (must parse on the target interpreter)
