@@ -8,7 +8,9 @@ on:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # 锁 22.04：ubuntu-latest 已升到 26.04，setup-python 在它上面没有 3.9 的构建，
+    # 会让最低支持版本这一腿永远跑不起来（2026-11-03 实测报 "Version 3.9 was not found"）。
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
