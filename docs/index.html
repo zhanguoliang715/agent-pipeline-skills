@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>软件开发流水线技能包</title>
+<meta name="description" content="把写需求、评审、设计、开发、测试、安全拆成 10 个 Agent Skill，每棒交稿前跑脚本过门禁，缺东西直接非 0 退出。">
+<style>
+:root{--ink:#1F1E1B;--muted:#5F5E5A;--line:#E3E1D9;--bg:#FBFAF6;--blue:#185FA5;--teal:#0F6E56}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:56px 24px 80px}
+h1{font-size:34px;line-height:1.3;margin:0 0 12px;letter-spacing:-.5px}
+.lead{font-size:18px;color:var(--muted);margin:0 0 28px;max-width:720px}
+h2{font-size:20px;margin:48px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+p{margin:0 0 14px}
+code{font-family:Consolas,"Cascadia Mono",monospace;background:#F1EFE8;padding:2px 6px;border-radius:4px;font-size:14px}
+pre{background:#1F1E1B;color:#D3D1C7;padding:18px 20px;border-radius:10px;overflow-x:auto;font-family:Consolas,"Cascadia Mono",monospace;font-size:14px;line-height:1.75}
+pre b{color:#9FE1CB;font-weight:400}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+a.btn{display:inline-block;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;border:2px solid var(--ink)}
+a.primary{background:var(--ink);color:#FBFAF6}
+a.ghost{background:transparent;color:var(--ink)}
+img.diagram{width:100%;height:auto;border:2px solid var(--ink);border-radius:12px;background:#fff;margin:8px 0 4px}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0 4px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#F1EFE8;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+.card{border:2px solid var(--ink);border-radius:10px;padding:18px 20px;background:#fff}
+.card h3{margin:0 0 8px;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.note{border-left:4px solid var(--teal);background:#E1F5EE;padding:14px 18px;border-radius:0 8px 8px 0;font-size:15px}
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>软件开发流水线技能包</h1>
+<p class="lead">把「写需求 → 评审 → 设计 → 开发 → 测试 → 安全」拆成 10 个 Agent Skill。每棒交稿前必须跑脚本过门禁，缺东西直接非 0 退出。给用 AI 写完整项目的人用。</p>
+
+<div class="btns">
+  <a class="btn primary" href="https://github.com/zhanguoliang715/agent-pipeline-skills">查看源码</a>
+  <a class="btn ghost" href="https://github.com/zhanguoliang715/agent-pipeline-skills/tree/main/docs/新手手册">新手手册</a>
+  <a class="btn ghost" href="https://github.com/zhanguoliang715/agent-pipeline-skills/tree/main/docs/技术文档">技术文档</a>
+</div>
+
+<h2>它解决什么问题</h2>
+<p>让 AI 写一个能跑的 Demo 很容易，写一个能交付的项目很难。难的不是写代码，是每一步之间的交接：需求没写验收标准就开工、设计缺失就开始写、代码写完没人测、扫完安全问题没人修、打回结论散在聊天记录里。</p>
+<p>这套技能包的做法很土但有效：<strong>九棒各管一段，产物文件名写死，每棒交稿前跑校验脚本，退出码非 0 不许往下流。</strong>交接不靠口头，靠文件在不在、章节全不全、结论是 YES 还是 NO。</p>
+
+<img class="diagram" src="assets/pipeline.svg" alt="九棒流水线总览：01 product-manager 到 09 security-pentester，加第十棒 orchestrator 总调度">
+
+<h2>三条命令验真伪</h2>
+<pre><b>$ python validate_pipeline.py</b>
+全部通过：references 无悬空且版本对齐 / 门禁在 / 命名齐 / scripts 不悬空。
+
+<b>$ python scripts/regression_test.py</b>
+用例总数: 78  通过: 78  失败: 0
+
+<b>$ python scripts/smoke_pipeline.py</b>
+  [PASS] 棒1 PM check_prd: rc=0 (期望 0)
+  ... 九棒门禁链全部 rc=0 ...
+结果: 冒烟通过（九棒门禁链 + 打回/修复路由均符合契约），退出码 0</pre>
+
+<h2>九棒一览</h2>
+<table>
+<tr><th style="width:56px">棒</th><th>技能</th><th>产出</th><th>门禁</th></tr>
+<tr><td>1</td><td><code>product-manager</code></td><td>01-prd.md</td><td>先确认要做，最多 3 轮追问</td></tr>
+<tr><td>2</td><td><code>requirement-reviewer</code></td><td>02-requirement-review.md</td><td>结论非 YES 不开工，最多打回 2 次</td></tr>
+<tr><td>3</td><td><code>prototype-designer</code></td><td>03-prototype-design.md</td><td>02 不是 YES 不画</td></tr>
+<tr><td>4</td><td><code>ui-designer</code></td><td>04-ui-design/</td><td>原型缺失或未放行不画</td></tr>
+<tr><td>5</td><td><code>database-designer</code></td><td>05-database-design.md</td><td>02 不是 YES 不设计</td></tr>
+<tr><td>6</td><td><code>architecture-designer</code></td><td>06-architecture-design.md</td><td>无 FR 清单或 05 未定稿不设计</td></tr>
+<tr><td>7</td><td><code>software-developer</code></td><td>07-source/ + 07-api-docs.md</td><td>02 非 YES 或设计不齐不写</td></tr>
+<tr><td>8</td><td><code>qa-tester</code></td><td>08-qa-test-report.md</td><td>起不来 = 致命 bug 直接打回</td></tr>
+<tr><td>9</td><td><code>security-pentester</code></td><td>09-security-pentest-report.md</td><td>外部 / 公网目标一律拒绝</td></tr>
+<tr><td>10</td><td><code>pipeline-orchestrator</code></td><td>不产出文件</td><td>只调度：串棒、打回、连错 3 次出阻塞报告</td></tr>
+</table>
+
+<h2>文档怎么读</h2>
+<div class="cards">
+  <div class="card">
+    <h3>新手手册</h3>
+    <p>每棒一份。它是什么、为什么要有它、具体怎么一步步做、做错了会怎样。第一次用从这看。</p>
+  </div>
+  <div class="card">
+    <h3>技术文档</h3>
+    <p>每棒一份。输入输出契约、外部依赖、能力边界、优缺点与缓解办法、失败模式。要改技能看这。</p>
+  </div>
+  <div class="card">
+    <h3>USAGE.md</h3>
+    <p>完整规则、退出码语义、独立部署命令对照表。规则冲突时以它为准。</p>
+  </div>
+</div>
+
+<h2>它不是什么</h2>
+<p class="note">它<strong>不是通用技能</strong>。它假定你做的是有前后端、要交付的中小型 Web 项目。换成纯算法库、数据分析脚本、嵌入式固件，架构分层与安全攻防两棒就不适用，硬套只会产出没人看的文档。它也<strong>不替你判断值不值得做</strong>——第 1 棒只追问到"边界清楚"为止。</p>
+
+<h2>环境</h2>
+<p>Python ≥ 3.9，八个校验脚本只用标准库，零 <code>pip install</code>。安全棒可选深度扫描 <code>pip install "bandit==1.9.4"</code>，不装也能跑。</p>
+
+<footer>MIT License · <a href="https://github.com/zhanguoliang715/agent-pipeline-skills">github.com/zhanguoliang715/agent-pipeline-skills</a></footer>
+</div>
+</body>
+</html>

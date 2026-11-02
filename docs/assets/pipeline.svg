@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 424" width="960" height="424" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="424" fill="#FFFFFF"/>
+
+  <g>
+    <rect x="40" y="32" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="60" y="58" font-size="14" font-weight="600" fill="#0C447C">01  product-manager</text>
+    <text x="60" y="80" font-size="12" fill="#185FA5">把想法写成可验收的 PRD</text>
+    <text x="60" y="98" font-size="11" fill="#5F5E5A">→ 01-prd.md</text>
+  </g>
+  <path d="M320 70 L340 70" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="344" y="32" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="364" y="58" font-size="14" font-weight="600" fill="#0C447C">02  requirement-reviewer</text>
+    <text x="364" y="80" font-size="12" fill="#185FA5">七维度评审，结论 YES 才放行</text>
+    <text x="364" y="98" font-size="11" fill="#5F5E5A">→ 02-requirement-review.md</text>
+  </g>
+  <path d="M624 70 L644 70" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="648" y="32" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="668" y="58" font-size="14" font-weight="600" fill="#0C447C">03  prototype-designer</text>
+    <text x="668" y="80" font-size="12" fill="#185FA5">按功能需求画页面线框稿</text>
+    <text x="668" y="98" font-size="11" fill="#5F5E5A">→ 03-prototype-design.md</text>
+  </g>
+
+  <g>
+    <rect x="40" y="140" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="60" y="166" font-size="14" font-weight="600" fill="#0C447C">04  ui-designer</text>
+    <text x="60" y="188" font-size="12" fill="#185FA5">线框转高保真界面与组件规范</text>
+    <text x="60" y="206" font-size="11" fill="#5F5E5A">→ 04-ui-design/</text>
+  </g>
+  <path d="M320 178 L340 178" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="344" y="140" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="364" y="166" font-size="14" font-weight="600" fill="#0C447C">05  database-designer</text>
+    <text x="364" y="188" font-size="12" fill="#185FA5">表结构、字段、主外键与关联</text>
+    <text x="364" y="206" font-size="11" fill="#5F5E5A">→ 05-database-design.md</text>
+  </g>
+  <path d="M624 178 L644 178" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="648" y="140" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="668" y="166" font-size="14" font-weight="600" fill="#0C447C">06  architecture-designer</text>
+    <text x="668" y="188" font-size="12" fill="#185FA5">分层架构、模块边界、扩展点</text>
+    <text x="668" y="206" font-size="11" fill="#5F5E5A">→ 06-architecture-design.md</text>
+  </g>
+
+  <g>
+    <rect x="40" y="248" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="60" y="274" font-size="14" font-weight="600" fill="#0C447C">07  software-developer</text>
+    <text x="60" y="296" font-size="12" fill="#185FA5">前后端分离开发并出接口文档</text>
+    <text x="60" y="314" font-size="11" fill="#5F5E5A">→ 07-source/ + 07-api-docs.md</text>
+  </g>
+  <path d="M320 286 L340 286" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="344" y="248" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="364" y="274" font-size="14" font-weight="600" fill="#0C447C">08  qa-tester</text>
+    <text x="364" y="296" font-size="12" fill="#185FA5">起不来即致命 bug，直接打回</text>
+    <text x="364" y="314" font-size="11" fill="#5F5E5A">→ 08-qa-test-report.md</text>
+  </g>
+  <path d="M624 286 L644 286" stroke="#5F5E5A" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <g>
+    <rect x="648" y="248" width="280" height="76" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+    <text x="668" y="274" font-size="14" font-weight="600" fill="#0C447C">09  security-pentester</text>
+    <text x="668" y="296" font-size="12" fill="#185FA5">授权门禁后多轮攻防，高危回归</text>
+    <text x="668" y="314" font-size="11" fill="#5F5E5A">→ 09-security-pentest-report.md</text>
+  </g>
+
+  <rect x="40" y="348" width="888" height="52" rx="10" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+  <text x="60" y="370" font-size="14" font-weight="600" fill="#085041">10  pipeline-orchestrator（总调度）</text>
+  <text x="60" y="390" font-size="12" fill="#0F6E56">只管调度不产出文件：串起 01–09，遇门禁不通过按规则打回，同一产物连错 3 次出阻塞报告</text>
+</svg>

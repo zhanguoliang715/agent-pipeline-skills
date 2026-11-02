@@ -1,0 +1,33 @@
+name: 技能建议
+description: 新增一棒、调整门禁判据、拆分或合并技能
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现在卡在哪
+      description: 描述真实遇到的情况，不要先给方案
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议怎么改
+      description: 如果是新增一棒，请说明它在流水线里的上下游各是谁
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 影响范围
+      options:
+        - 单棒内部（不动产物名与门禁）
+        - 影响产物命名或门禁判据（需同步改校验脚本与回归用例）
+        - 影响流水线顺序（需同步改 orchestrator 与 USAGE）
+    validations:
+      required: true
+  - type: checkboxes
+    id: contract
+    attributes:
+      label: 契约影响
+      options:
+        - label: 我愿意同步补 regression_test.py 的用例
+        - label: 我愿意同步改 SKILL.md 的「输出契约」章节

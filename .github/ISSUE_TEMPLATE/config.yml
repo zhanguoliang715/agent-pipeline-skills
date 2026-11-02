@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 先看文档
+    url: https://github.com/zhanguoliang715/agent-pipeline-skills/tree/main/docs
+    about: 新手手册讲怎么用，技术文档讲边界与限制，多数问题在这两份里已有答案

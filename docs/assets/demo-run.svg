@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 452" width="900" height="452" font-family="Consolas,'Cascadia Mono','Courier New',monospace">
+  <rect x="0" y="0" width="900" height="452" rx="10" fill="#1F1E1B"/>
+  <rect x="0" y="0" width="900" height="34" rx="10" fill="#2C2C2A"/>
+  <rect x="0" y="24" width="900" height="10" fill="#2C2C2A"/>
+  <circle cx="24" cy="17" r="6" fill="#A32D2D"/>
+  <circle cx="44" cy="17" r="6" fill="#854F0B"/>
+  <circle cx="64" cy="17" r="6" fill="#3B6D11"/>
+  <text x="88" y="21" font-size="12" fill="#888780">agent-pipeline-skills — 仓库根目录</text>
+
+  <text x="20" y="62" font-size="13" fill="#9FE1CB">$ python validate_pipeline.py</text>
+  <text x="20" y="86" font-size="13" fill="#D3D1C7">全部通过：references 无悬空且版本对齐 / 门禁在 / 命名齐 / scripts 不悬空。</text>
+
+  <text x="20" y="118" font-size="13" fill="#9FE1CB">$ python scripts/regression_test.py</text>
+  <text x="20" y="142" font-size="13" fill="#D3D1C7">用例总数: 78  通过: 78  失败: 0</text>
+
+  <text x="20" y="174" font-size="13" fill="#9FE1CB">$ python scripts/smoke_pipeline.py</text>
+  <text x="20" y="198" font-size="13" fill="#97C459">  [PASS] 棒1 PM check_prd: rc=0 (期望 0)</text>
+  <text x="20" y="220" font-size="13" fill="#97C459">  [PASS] 棒2 RR check_review: rc=0 (期望 0)</text>
+  <text x="20" y="242" font-size="13" fill="#97C459">  [PASS] 棒3 PD check_prototype: rc=0 (期望 0)</text>
+  <text x="20" y="264" font-size="13" fill="#97C459">  [PASS] 棒4 UI check_ui: rc=0 (期望 0)</text>
+  <text x="20" y="286" font-size="13" fill="#97C459">  [PASS] 棒5 DB check_database: rc=0 (期望 0)</text>
+  <text x="20" y="308" font-size="13" fill="#97C459">  [PASS] 棒6 AR check_architecture: rc=0 (期望 0)</text>
+  <text x="20" y="330" font-size="13" fill="#97C459">  [PASS] 棒7 SD check_source: rc=0 (期望 0)</text>
+  <text x="20" y="352" font-size="13" fill="#97C459">  [PASS] 棒8 QA check_qa: rc=0 (期望 0)</text>
+  <text x="20" y="374" font-size="13" fill="#97C459">  [PASS] 棒9 SP scan_security: rc=0 (期望 0)</text>
+  <text x="20" y="396" font-size="13" fill="#97C459">  [PASS] 打回路由: 缺里程碑 check_prd rc=1 (期望 1)</text>
+  <text x="20" y="418" font-size="13" fill="#97C459">  [PASS] 修复路由: 写回完整版 check_prd rc=0 (期望 0)</text>
+  <text x="20" y="440" font-size="13" fill="#D3D1C7">结果: 冒烟通过（九棒门禁链 + 打回/修复路由均符合契约），退出码 0</text>
+</svg>

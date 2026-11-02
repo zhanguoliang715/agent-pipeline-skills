@@ -1,0 +1,64 @@
+name: 缺陷报告
+description: 校验脚本退出码不对、门禁规则写错、文档与实现不一致
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请先跑一遍三连自检，把输出贴进来：
+        `python validate_pipeline.py && python scripts/regression_test.py && python scripts/smoke_pipeline.py`
+  - type: dropdown
+    id: baton
+    attributes:
+      label: 涉及哪一棒
+      options:
+        - 仓库级（validate / CI / 文档）
+        - 01 product-manager
+        - 02 requirement-reviewer
+        - 03 prototype-designer
+        - 04 ui-designer
+        - 05 database-designer
+        - 06 architecture-designer
+        - 07 software-developer
+        - 08 qa-tester
+        - 09 security-pentester
+        - 10 pipeline-orchestrator
+    validations:
+      required: true
+  - type: input
+    id: expect
+    attributes:
+      label: 期望的退出码
+      placeholder: 0
+    validations:
+      required: true
+  - type: input
+    id: actual
+    attributes:
+      label: 实际退出码
+      placeholder: 1
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 命令 + 产物内容（可脱敏），越具体越好
+      placeholder: |
+        1. python product-manager/scripts/check_prd.py 01-prd.md
+        2. 产物缺少「验收标准」章节
+        3. 期望退 1，实际退 0
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      placeholder: Windows 11 / Python 3.11.9
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      options:
+        - label: 我没有为了跑通退出码而修改校验脚本本身
+          required: true
