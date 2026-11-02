@@ -168,10 +168,20 @@ QA_FATAL_NONUM = """# 测试报告
 """
 
 
+CURRENT = {"name": ""}
+DIAG = {}
+
+
 def run(script, *args):
     cmd = [sys.executable, str(script), *args]
     p = subprocess.run(cmd, capture_output=True, text=True,
                        encoding="utf-8", errors="replace")
+    DIAG[CURRENT["name"]] = {
+        "rc": p.returncode,
+        "cmd": " ".join(cmd),
+        "stderr": (p.stderr or "").strip()[-600:],
+        "stdout": (p.stdout or "").strip()[-300:],
+    }
     return p.returncode
 
 
@@ -819,6 +829,7 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td)
         for name, fn in TESTS:
+            CURRENT["name"] = name
             try:
                 if fn(tmp):
                     passed += 1
@@ -837,6 +848,13 @@ def main():
         print("\n--- 失败用例 ---")
         for f in failed:
             print("  FAIL ", f)
+            d = DIAG.get(f.split(" (")[0])
+            if d:
+                print(f"         实际退出码: {d['rc']}")
+                if d["stderr"]:
+                    print(f"         stderr: {d['stderr']}")
+                elif d["stdout"]:
+                    print(f"         stdout 末段: {d['stdout']}")
         print(f"\n结果: 失败 {len(failed)}，退出码 1")
         return 1
     print("\n结果: 全部通过，退出码 0")
