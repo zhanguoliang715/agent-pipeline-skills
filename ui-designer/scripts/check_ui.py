@@ -86,9 +86,14 @@ def main():
     print(f"UI 设计目录检查: {d}")
     for pr in problems:
         print(f"  FAIL {pr}")
-    if spec.is_file() and PLACEHOLDER.search(spec.read_text(encoding="utf-8")):
-        print(f"  WARN design-spec.md 仍有占位符未替换：{placeholder_desc(spec.read_text(encoding="utf-8"))}")
-        sys.exit(2)
+    if spec.is_file():
+        spec_text = spec.read_text(encoding="utf-8")
+        hits = placeholder_desc(spec_text)
+        if hits:
+            # 不能用 f-string 内嵌同类引号（PEP 701 仅 3.12+），本仓库声明支持 3.9+，
+            # 故先取值再拼串。2026-11-03：此处曾导致 CI 在 3.11 上 SyntaxError 三连红。
+            print("  WARN design-spec.md 仍有占位符未替换：" + hits)
+            sys.exit(2)
     if problems:
         sys.exit(1)
     if text_only:

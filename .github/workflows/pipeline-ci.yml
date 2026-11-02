@@ -9,20 +9,27 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.11"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python }}
 
       - name: Install security scanner dependency
         run: pip install "bandit==1.9.4"
 
+      - name: Syntax gate (must parse on the target interpreter)
+        run: python -m compileall -q . -x '/(\.git|node_modules)/'
+
       - name: Structure & doc consistency (validate_pipeline)
         run: python validate_pipeline.py
 
-      - name: Behavior contract regression (68+ cases)
+      - name: Behavior contract regression (78 cases)
         run: python scripts/regression_test.py
 
       - name: End-to-end smoke (nine-gate chain + reject/fix routing)
