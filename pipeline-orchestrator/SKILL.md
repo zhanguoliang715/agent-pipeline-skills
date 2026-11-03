@@ -1,5 +1,6 @@
 ---
 name: pipeline-orchestrator
+license: MIT
 description: 软件开发流水线总调度。当用户说"走流水线/从需求做到上线/做个完整项目/全套开发流程"时使用，按顺序串联 product-manager -> requirement-reviewer -> prototype-designer -> ui-designer -> database-designer -> architecture-designer -> software-developer -> qa-tester -> security-pentester，每棒检查产物和校验脚本，打回自动路由，最后打包九件套交付。不要用于：只写需求、只测功能、只做安全测试等单棒任务（直接调对应棒即可）。
 metadata:
   platform: cross-platform

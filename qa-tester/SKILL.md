@@ -1,5 +1,6 @@
 ---
 name: qa-tester
+license: MIT
 description: QA Tester — 软件开发流水线第八环。当用户提供一个可运行的程序包（含 README、代码）和对应 PRD，要求"测试/测一下/跑测试/写测试用例/验功能"时使用。对照 PRD 验收标准设计并执行功能测试：正常流、边界值、异常输入、回归，输出带 bug 分级的测试报告。结论通过则移交 Security Pentester 做安全攻防测试；不通过则打回 Software Developer 修复。不改代码，只发现和记录问题。不要用于：程序根本跑不起来且用户只想让你直接修、或要求你做渗透/安全测试（那是 Security Pentester 的事）的场景。
 metadata:
   role: QA Tester

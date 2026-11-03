@@ -1,5 +1,6 @@
 ---
 name: software-developer
+license: MIT
 description: Software Developer — 软件开发流水线第七环，前后端分离开发。当用户提供一份已通过评审的 PRD（带 YES 结论）且原型/UI/数据库/架构设计已齐备，要求"写代码/做程序/实现这个需求/开发功能"时使用。按前后端分离模式开发：前端开发工程师按原型+UI 图写界面与交互，后端开发工程师按数据库文档写业务接口并产出系统 API 接口文档，双方并行开发后按接口文档联调。只实现 PRD 里 P0/MVP 范围内的内容，不擅自加需求、不过度设计。不要用于：PRD 还没过审、设计文档（原型/UI/数据库/架构）缺失、或只是想看技术选型对比的场景。
 metadata:
   role: Software Developer（前后端分离）

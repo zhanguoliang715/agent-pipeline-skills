@@ -1,5 +1,6 @@
 ---
 name: product-manager
+license: MIT
 description: Product Manager — 软件开发流水线第一环。当用户提出业务想法、新功能点子，或明确要求"写需求/出PRD/整理产品需求/做产品方案"时使用。把原始想法加工成结构完整、边界清晰、带可判定验收标准的产品需求文档（PRD），交付给 Requirement Reviewer 判断可执行性。不写代码、不做技术选型、不做测试。不要用于：已有 PRD 只需微调、用户只是随口聊想法尚未决定做、或要求直接动手开发的场景。
 metadata:
   role: Product Manager

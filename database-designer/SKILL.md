@@ -1,5 +1,6 @@
 ---
 name: database-designer
+license: MIT
 description: Database Designer（数据库设计）— 软件开发流水线第五环。项目技术经理角色，根据功能需求列表设计数据库模型与表关联关系。当 PRD 已过评审、准备开发，用户要求"设计数据库/建表/设计表结构/ER模型/数据模型"时使用。把功能需求转成表清单、字段定义、主外键与关联关系，交付给 Software Developer（后端开发）作为持久化依据。不要用于：没有明确功能需求清单、或用户只要代码不要数据库设计的场景。
 metadata:
   role: Database Designer（项目技术经理）

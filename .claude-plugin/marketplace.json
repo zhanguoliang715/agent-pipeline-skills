@@ -1,0 +1,30 @@
+{
+  "name": "agent-pipeline-skills",
+  "owner": {
+    "name": "zhanguoliang715"
+  },
+  "metadata": {
+    "description": "软件开发十棒流水线：需求→评审→设计→开发→测试→安全，每棒交稿前跑脚本过门禁",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "software-pipeline",
+      "description": "十棒串行流水线技能包：product-manager、requirement-reviewer、prototype-designer、ui-designer、database-designer、architecture-designer、software-developer、qa-tester、security-pentester，外加只调度不产出的 pipeline-orchestrator",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./product-manager",
+        "./requirement-reviewer",
+        "./prototype-designer",
+        "./ui-designer",
+        "./database-designer",
+        "./architecture-designer",
+        "./software-developer",
+        "./qa-tester",
+        "./security-pentester",
+        "./pipeline-orchestrator"
+      ]
+    }
+  ]
+}

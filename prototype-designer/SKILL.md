@@ -1,5 +1,6 @@
 ---
 name: prototype-designer
+license: MIT
 description: Prototype Designer（产品原型设计）— 软件开发流水线第三环。产品经理角色，根据已过评审的 PRD 功能需求列表绘制页面框架线稿图（Axure / Figma 设计思路）。当 PRD 已通过需求评审，用户要求"画原型/做原型图/设计页面线框/页面框架设计/低保证真稿"时使用。把功能需求转成每个页面的结构、元素布局与交互说明，交付给 UI Designer。不要用于：需求未过审、直接要求高保真界面图（那是 UI Designer 的活）、或要求直接写代码的场景。
 metadata:
   role: Prototype Designer（产品经理）

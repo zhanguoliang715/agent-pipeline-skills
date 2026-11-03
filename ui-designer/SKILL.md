@@ -1,5 +1,6 @@
 ---
 name: ui-designer
+license: MIT
 description: UI Designer（UI 设计）— 软件开发流水线第四环。设计师角色，根据已通过的原型设计文档绘制高保真系统界面设计图。当原型设计已完成，用户要求"做UI/画界面/高保真设计图/视觉设计/界面美化"时使用。把线框稿转成带配色、字体、间距、组件规范的正式界面设计图，交付给 Software Developer 作为前端开发依据。不要用于：原型线框还没做、或用户只要写代码不要视觉稿的场景。
 metadata:
   role: UI Designer（设计师）

@@ -1,5 +1,6 @@
 ---
 name: architecture-designer
+license: MIT
 description: Architecture Designer（架构设计）— 软件开发流水线第六环。项目技术经理角色，设计整体系统分层架构，便于以后扩展功能。当 PRD 已过评审、数据库设计完成，用户要求"设计架构/系统分层/技术架构/模块划分/扩展性设计"时使用。把功能需求转成分层架构、模块边界、技术选型与扩展点设计，交付给 Software Developer 作为开发骨架依据。不要用于：没有明确需求范围、或用户只要代码不要架构设计的场景。
 metadata:
   role: Architecture Designer（项目技术经理）
