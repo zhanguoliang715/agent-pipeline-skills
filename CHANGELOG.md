@@ -2,6 +2,13 @@
 
 记录本仓库每次向 GitHub 推送的变更内容。规则：**每次上传必须同步更新本文件**，按提交追加一条，格式见下。
 
+## 2026-11-03 撤掉演示动图，改为贴真实输出
+
+docs: 演示素材回归文字
+
+- 删除 `docs/assets/demo.gif`（代码绘制的动画，非录屏）与 `docs/assets/demo-run.svg`（同一内容的静态图），README 不再引用任何演示素材文件
+- 改为在 README 直接贴三条命令的实际输出代码块：可复制、可照跑复现，且不会让人误以为是屏幕录制
+- 依据：抽查五个同类头部仓库（obra/superpowers 311k、mattpocock/skills 310k、anthropics/skills 186k、addyosmani/agent-skills 112k、nextlevelbuilder/ui-ux-pro-max-skill 144k），四个根本没有动图；唯一有动图的那个录的是产品网页界面（含鼠标指针，6.7MB），不是终端。终端类项目贴文本是主流做法。
 ## 2026-11-03 演示动图改为机器捕获，并明确其性质
 
 docs: 动图来源与图注修正

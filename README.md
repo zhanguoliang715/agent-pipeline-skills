@@ -29,11 +29,32 @@
 
 ## 实际运行输出
 
-![三连自检输出示意：文字由脚本实时捕获本次运行结果，画面由 ffmpeg 绘制，非屏幕录制](docs/assets/demo.gif)
+下面是三条命令的实际输出，直接跑这三行即可复现（超长行与分节横线为便于阅读已略去，其余逐字未改）：
 
-**这张图不是屏幕录制。** 它是为了让 README 能展示而绘制的动画：文字由脚本跑完上面三条命令后实时捕获（超长行与分节横线已略去），画面由 ffmpeg 逐行画出，没有终端窗口、没有抓屏。
+```bash
+$ python validate_pipeline.py
+全部通过：references 无悬空且版本对齐 / 门禁在 / 命名齐 / scripts 不悬空。
+$ python scripts/regression_test.py
+用例总数: 78  通过: 78  失败: 0
+结果: 全部通过，退出码 0
+$ python scripts/smoke_pipeline.py
+  [PASS] 棒1 PM check_prd: rc=0 (期望 0)
+  [PASS] 棒2 RR check_review: rc=0 (期望 0)
+  [PASS] 棒3 PD check_prototype: rc=0 (期望 0)
+  [PASS] 棒4 UI check_ui: rc=0 (期望 0)
+  [PASS] 棒5 DB check_database: rc=0 (期望 0)
+  [PASS] 棒6 AR check_architecture: rc=0 (期望 0)
+  [PASS] 棒7 SD check_source: rc=0 (期望 0)
+  [PASS] 棒8 QA check_qa: rc=0 (期望 0)
+  [PASS] 棒9 SP scan_security: rc=0 (期望 0)
+  [PASS] 打回路由: 缺里程碑 check_prd rc=1 (期望 1)
+  [PASS] 修复路由: 写回完整版 check_prd rc=0 (期望 0)
+  [PASS] 设计打回路由: 原型缺FR引用 check_prototype rc=1 (期望 1)
+  [PASS] 设计修复路由: 写回完整原型 check_prototype rc=0 (期望 0)
+结果: 冒烟通过（九棒门禁链 + 打回/修复路由均符合契约），退出码 0
+```
 
-想核实就直接跑一遍，输出与图中一致：78 个回归用例、九棒门禁链、打回与修复路由全部由脚本断言，不是手写结论。
+78 个回归用例、九棒门禁链、打回与修复路由，全部由脚本断言，不是手写结论。
 
 ## 安装（三种方式，按推荐顺序）
 
