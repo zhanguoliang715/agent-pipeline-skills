@@ -30,17 +30,39 @@
 
 78 个回归用例、九棒门禁链、打回与修复路由，全部由脚本断言，不是手写结论。
 
-## 用插件安装（一条命令，已实测）
+## 安装（三种方式，按推荐顺序）
+
+### 1. 一条命令装进所有 Agent（推荐，已实测）
+
+```bash
+npx skills add zhanguoliang715/agent-pipeline-skills
+```
+
+装好后会同时挂到 Codex、Cursor、Amp、Antigravity、Claude Code 等 20+ 个 Agent 上，不用逐个配。
+
+### 2. 作为 Claude Code 插件（已实测）
 
 ```bash
 claude plugin marketplace add zhanguoliang715/agent-pipeline-skills
 claude plugin install software-pipeline@agent-pipeline-skills
 ```
 
-> 本机 git 若报 `CRYPT_E_NO_REVOCATION_CHECK`（证书吊销列表查不到），命令前加 `GIT_SSL_NO_VERIFY=1`。
-> 这是本机 TLS 配置问题，与仓库无关；换台机器通常直接可用。
+### 3. 手动拷目录
 
-不想装插件也行，下面的手动方式是等价的。
+```bash
+git clone https://github.com/zhanguoliang715/agent-pipeline-skills.git
+```
+
+> **本机 git 报 `CRYPT_E_NO_REVOCATION_CHECK` 时**（证书吊销列表查不到），在命令前加 `GIT_SSL_NO_VERIFY=1`。
+> 这是本机 TLS 配置问题，与仓库无关，换台机器通常直接可用。
+
+## English
+
+10 skills that turn "write a requirement" into shippable software: PRD, review, prototype, UI, database, architecture, code, QA, security pentest, plus an orchestrator. Every baton must pass a script gate before handoff.
+
+```bash
+npx skills add zhanguoliang715/agent-pipeline-skills
+```
 
 ## 30 秒上手
 
