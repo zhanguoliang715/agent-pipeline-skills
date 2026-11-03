@@ -6,6 +6,9 @@
 ![Python](https://img.shields.io/badge/python-3.9%2B-3776AB)
 ![Dependencies](https://img.shields.io/badge/pip%20install-0%20个依赖-2E7D32)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
+![技能](https://img.shields.io/badge/%E6%8A%80%E8%83%BD-10%20%E6%A3%92-2E7D32)
+![回归用例](https://img.shields.io/badge/%E5%9B%9E%E5%BD%92%E7%94%A8%E4%BE%8B-78-1D9E75)
+![spec](https://img.shields.io/badge/agentskills.io-spec%20valid-2E7D32)
 
 ![流水线总览](docs/assets/pipeline.svg)
 
@@ -26,6 +29,18 @@
 ![三连自检实际输出](docs/assets/demo-run.svg)
 
 78 个回归用例、九棒门禁链、打回与修复路由，全部由脚本断言，不是手写结论。
+
+## 用插件安装（一条命令，已实测）
+
+```bash
+claude plugin marketplace add zhanguoliang715/agent-pipeline-skills
+claude plugin install software-pipeline@agent-pipeline-skills
+```
+
+> 本机 git 若报 `CRYPT_E_NO_REVOCATION_CHECK`（证书吊销列表查不到），命令前加 `GIT_SSL_NO_VERIFY=1`。
+> 这是本机 TLS 配置问题，与仓库无关；换台机器通常直接可用。
+
+不想装插件也行，下面的手动方式是等价的。
 
 ## 30 秒上手
 
