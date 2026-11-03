@@ -1,5 +1,8 @@
 # 软件开发流水线技能包
 
+<p align="right">[简体中文](README.md) | [English](README.en.md)</p>
+
+
 **把「写需求 → 评审 → 设计 → 开发 → 测试 → 安全」拆成 10 个 Agent Skill，每棒交稿前必须跑脚本过门禁，缺东西直接非 0 退出。给用 AI 写完整项目的人用。**
 
 [![CI](https://github.com/zhanguoliang715/agent-pipeline-skills/actions/workflows/pipeline-ci.yml/badge.svg)](https://github.com/zhanguoliang715/agent-pipeline-skills/actions/workflows/pipeline-ci.yml)
@@ -26,7 +29,7 @@
 
 ## 实际运行（原文照录，未改写）
 
-![三连自检实际输出](docs/assets/demo-run.svg)
+![三连自检实际输出（终端回放，内容为真实运行输出）](docs/assets/demo.gif)
 
 78 个回归用例、九棒门禁链、打回与修复路由，全部由脚本断言，不是手写结论。
 
